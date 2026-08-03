@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import AppTooltip from "./components/AppTooltip";
 import ContextMenu, {
   captureContextMenu,
@@ -7,6 +8,7 @@ import ContextMenu, {
   type ContextMenuPosition,
 } from "./components/ContextMenu";
 import NotesIcon, { type NotesIconName } from "./components/NotesIcon";
+import WindowControlIcon from "./components/WindowControlIcon";
 import { reloadAppWindow, useNavMenuItems } from "./components/navMenu";
 import { AppearanceProvider, useAppearance } from "./appearance/AppearanceContext";
 import { ViewModeProvider } from "./appearance/ViewModeContext";
@@ -77,9 +79,14 @@ function Shell() {
   const brandRef = useRef<HTMLDivElement>(null);
   const navLeftRef = useRef<HTMLElement>(null);
   const navRightRef = useRef<HTMLElement>(null);
+  const windowControlsRef = useRef<HTMLDivElement>(null);
   const expandedWidthRef = useRef(0);
   const [menu, setMenu] = useState<{ pos: ContextMenuPosition; items: ContextMenuItem[] } | null>(null);
   const navItems = useNavMenuItems();
+  const isWindows = /Win/i.test(navigator.platform || "");
+  const isTauriRuntime = "__TAURI_INTERNALS__" in window || "__TAURI__" in window;
+  const showWindowControls = isWindows && isTauriRuntime;
+  const [windowMaximized, setWindowMaximized] = useState(false);
 
   useEffect(() => {
     document.title = "ConneCat";
@@ -100,7 +107,14 @@ function Shell() {
       const style = getComputedStyle(topbar);
       const gap = parseFloat(style.columnGap || style.gap) || 0;
       const padding = (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.paddingRight) || 0);
-      return padding + brand.scrollWidth + navLeft.scrollWidth + navRight.scrollWidth + gap * 2;
+      const controlsWidth = windowControlsRef.current?.scrollWidth ?? 0;
+      const childCount = controlsWidth > 0 ? 4 : 3;
+      return padding
+        + brand.scrollWidth
+        + navLeft.scrollWidth
+        + navRight.scrollWidth
+        + controlsWidth
+        + gap * (childCount - 1);
     };
     const update = () => {
       if (!autoCompact) {
@@ -120,6 +134,49 @@ function Shell() {
       window.removeEventListener("resize", update);
     };
   }, [autoCompact, configuredIconsOnly, remoteTabs.length, tabs.length]);
+
+  useEffect(() => {
+    if (!showWindowControls) return;
+
+    const appWindow = getCurrentWindow();
+    let disposed = false;
+    let unlisten: (() => void) | undefined;
+    const updateMaximized = () => {
+      void appWindow.isMaximized().then((maximized) => {
+        if (!disposed) setWindowMaximized(maximized);
+      });
+    };
+
+    updateMaximized();
+    void appWindow.onResized(updateMaximized).then((stopListening) => {
+      if (disposed) stopListening();
+      else unlisten = stopListening;
+    });
+
+    return () => {
+      disposed = true;
+      unlisten?.();
+    };
+  }, [showWindowControls]);
+
+  const onMinimize = () => {
+    if (!showWindowControls) return;
+    void getCurrentWindow().minimize();
+  };
+
+  const onToggleMaximize = async () => {
+    if (!showWindowControls) return;
+    const appWindow = getCurrentWindow();
+    const maximized = await appWindow.isMaximized();
+    if (maximized) await appWindow.unmaximize();
+    else await appWindow.maximize();
+    setWindowMaximized(!maximized);
+  };
+
+  const onClose = () => {
+    if (!showWindowControls) return;
+    void getCurrentWindow().close();
+  };
 
   const openTopbarMenu = (event: React.MouseEvent) => {
     setMenu({
@@ -173,6 +230,26 @@ function Shell() {
         <nav ref={navRightRef} className="nav-right">
           <NavigationLink path="/settings" label="Settings" icon="settings" iconsOnly={iconsOnly} />
         </nav>
+        {showWindowControls && (
+          <div ref={windowControlsRef} className="window-controls">
+            <button type="button" className="window-control-btn" onClick={onMinimize} aria-label="Minimize" title="Minimize" data-no-drag>
+              <WindowControlIcon name="minimize" />
+            </button>
+            <button
+              type="button"
+              className="window-control-btn"
+              onClick={() => void onToggleMaximize()}
+              aria-label={windowMaximized ? "Restore" : "Maximize"}
+              title={windowMaximized ? "Restore" : "Maximize"}
+              data-no-drag
+            >
+              <WindowControlIcon name={windowMaximized ? "restore" : "maximize"} />
+            </button>
+            <button type="button" className="window-control-btn window-control-btn--close" onClick={onClose} aria-label="Close" title="Close" data-no-drag>
+              <WindowControlIcon name="close" />
+            </button>
+          </div>
+        )}
       </header>
       <main>
         <Routes>
