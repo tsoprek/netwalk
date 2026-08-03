@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <!--
+      Package-level logging creates a verbose MSI*.LOG in the installing
+      account's %TEMP% directory for installs, upgrades, repairs and removals.
+    -->
+    <Property Id="MsiLogging" Value="voicewarmupx!" />
+    <ComponentGroup Id="ConneCatInstallerLogging" />
+  </Fragment>
+</Wix>

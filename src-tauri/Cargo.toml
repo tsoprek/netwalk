@@ -1,0 +1,50 @@
+[package]
+name = "connecat-client"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "connecat_client_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+path = "src/lib.rs"
+
+[build-dependencies]
+tauri-build = { version = "2.0.0-beta", features = [] }
+
+[dependencies]
+tauri = { version = "2.0.0-beta", features = ["protocol-asset", "devtools", "unstable"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-clipboard-manager = "2"
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tokio-tungstenite = { version = "0.24", features = ["native-tls"] }
+native-tls = "0.2"
+futures-util = "0.3"
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+reqwest = { version = "0.12", features = ["json", "multipart", "native-tls", "rustls-tls", "stream", "gzip", "brotli", "deflate", "zstd"], default-features = false }
+portable-pty = "0.8"
+serialport = { version = "4.7", default-features = false }
+parking_lot = "0.12"
+russh = "0.45"
+russh-sftp = "2.0"
+base64 = "0.22"
+shellexpand = "3"
+async-trait = "0.1"
+uuid = { version = "1.23.2", features = ["v4"] }
+zip = { version = "4.6.1", default-features = false }
+zeroize = { version = "1", features = ["derive"] }
+
+[target.'cfg(windows)'.dependencies]
+webview2-com = "0.38.2"
+windows-sys = { version = "0.59", features = [
+  "Win32_Foundation",
+  "Win32_UI_WindowsAndMessaging",
+] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-app-kit = { version = "0.3", default-features = false, features = ["NSApplication", "NSImage", "NSResponder"] }
+objc2-foundation = { version = "0.3", default-features = false, features = ["NSData"] }
