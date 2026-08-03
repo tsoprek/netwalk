@@ -7,7 +7,10 @@ import ContextMenu, {
   type ContextMenuItem,
   type ContextMenuPosition,
 } from "./components/ContextMenu";
-import NotesIcon, { type NotesIconName } from "./components/NotesIcon";
+import NotesIcon from "./components/NotesIcon";
+import StandaloneTopbarIcon, {
+  type StandaloneTopbarIconName,
+} from "./components/StandaloneTopbarIcon";
 import WindowControlIcon from "./components/WindowControlIcon";
 import { reloadAppWindow, useNavMenuItems } from "./components/navMenu";
 import { AppearanceProvider, useAppearance } from "./appearance/AppearanceContext";
@@ -28,7 +31,7 @@ import Identities from "./pages/Identities";
 import Settings from "./pages/Settings";
 import SftpBrowser from "./pages/SftpBrowser";
 
-const NAVIGATION: Array<{ path: string; label: string; icon: NotesIconName }> = [
+const NAVIGATION: Array<{ path: string; label: string; icon: StandaloneTopbarIconName }> = [
   { path: "/connections", label: "Connections", icon: "connections" },
   { path: "/sessions", label: "Sessions", icon: "sessions" },
   { path: "/remote-access", label: "Remote Access", icon: "remote-access" },
@@ -46,7 +49,7 @@ function NavigationLink({
 }: {
   path: string;
   label: string;
-  icon: NotesIconName;
+  icon: StandaloneTopbarIconName;
   suffix?: string;
   iconsOnly: boolean;
 }) {
@@ -61,7 +64,7 @@ function NavigationLink({
       aria-label={accessibleLabel}
       title={accessibleLabel}
     >
-      <NotesIcon name={icon} size={21} />
+      <StandaloneTopbarIcon name={icon} size={21} />
       {!iconsOnly && <span>{accessibleLabel}</span>}
       {iconsOnly && count && <span className="topbar-nav-count">{count}</span>}
     </Link>
@@ -210,8 +213,11 @@ function Shell() {
     <div className="app">
       <header ref={topbarRef} className="topbar" data-tauri-drag-region onContextMenu={openTopbarMenu}>
         <div ref={brandRef} className="brand-wrap">
-          <img className="brand-logo" src="/connecat.png" alt="" />
+          <span className="standalone-brand-mark" aria-hidden="true">
+            <StandaloneTopbarIcon name="brand" size={31} />
+          </span>
           <span className="brand">ConneCat</span>
+          <span className="standalone-badge">Standalone</span>
         </div>
         <nav ref={navLeftRef} className="nav-left">
           {NAVIGATION.map((item) => (

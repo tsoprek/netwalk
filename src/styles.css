@@ -383,6 +383,34 @@ body {
   align-items: center;
   gap: 0.35rem;
 }
+.standalone-brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  color: var(--accent);
+  pointer-events: none;
+}
+.standalone-brand-mark svg {
+  display: block;
+}
+.standalone-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  margin-left: 0.25rem;
+  padding: 0 7px;
+  color: var(--app-chrome-bg);
+  background: var(--accent);
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
 .brand-logo {
   height: 36px;
   width: auto;
