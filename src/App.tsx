@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import AppTooltip from "./components/AppTooltip";
 import ContextMenu, {
@@ -14,7 +14,7 @@ import StandaloneTopbarIcon, {
 import WindowControlIcon from "./components/WindowControlIcon";
 import { reloadAppWindow, useNavMenuItems } from "./components/navMenu";
 import { AppearanceProvider, useAppearance } from "./appearance/AppearanceContext";
-import { ViewModeProvider } from "./appearance/ViewModeContext";
+import { ViewModeProvider, useViewMode } from "./appearance/ViewModeContext";
 import { TerminalsProvider, useTerminals } from "./terminals/TerminalsContext";
 import { ConsolesProvider } from "./consoles/ConsolesContext";
 import { useConsoles } from "./consoles/useConsoles";
@@ -30,6 +30,7 @@ import Notebooks from "./pages/Notebooks";
 import Identities from "./pages/Identities";
 import Settings from "./pages/Settings";
 import SftpBrowser from "./pages/SftpBrowser";
+import { installNativeAppMenu } from "./nativeAppMenu";
 
 const NAVIGATION: Array<{ path: string; label: string; icon: StandaloneTopbarIconName }> = [
   { path: "/connections", label: "Connections", icon: "connections" },
@@ -72,7 +73,9 @@ function NavigationLink({
 }
 
 function Shell() {
+  const navigate = useNavigate();
   const { appearance, userPrefs, setUserPrefs } = useAppearance();
+  const { viewMode, setViewMode } = useViewMode();
   const { tabs } = useTerminals();
   const { tabs: remoteTabs } = useConsoles();
   const configuredIconsOnly = appearance.topNavigationDisplay === "icons";
@@ -94,6 +97,45 @@ function Shell() {
   useEffect(() => {
     document.title = "ConneCat";
   }, []);
+
+  useEffect(() => {
+    if (!("__TAURI_INTERNALS__" in window || "__TAURI__" in window)) return;
+    if (!/Macintosh|Mac OS X/i.test(navigator.userAgent)) return;
+
+    let cancelled = false;
+    void installNativeAppMenu({
+      viewMode,
+      workspaceDesign: appearance.workspaceDesign,
+      topNavigationDisplay: appearance.topNavigationDisplay,
+      terminalToolbarDisplay: appearance.terminalToolbarDisplay,
+      connectionsToolbarDisplay: appearance.connectionsToolbarDisplay,
+      onSettings: () => navigate("/settings"),
+      onReload: reloadAppWindow,
+      onViewMode: setViewMode,
+      onWorkspaceDesign: (workspaceDesign) => setUserPrefs({ ...userPrefs, workspaceDesign }),
+      onTopNavigationDisplay: (mode) => setUserPrefs({ ...userPrefs, topNavigationDisplay: mode }),
+      onTerminalToolbarDisplay: (mode) => setUserPrefs({ ...userPrefs, terminalToolbarDisplay: mode }),
+      onConnectionsToolbarDisplay: (mode) => setUserPrefs({ ...userPrefs, connectionsToolbarDisplay: mode }),
+    }).then((menu) => {
+      if (cancelled) void menu.close();
+    }).catch((error) => {
+      console.warn("Could not install ConneCat native application menu", error);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    appearance.connectionsToolbarDisplay,
+    appearance.terminalToolbarDisplay,
+    appearance.topNavigationDisplay,
+    appearance.workspaceDesign,
+    navigate,
+    setUserPrefs,
+    setViewMode,
+    userPrefs,
+    viewMode,
+  ]);
 
   useLayoutEffect(() => {
     if (configuredIconsOnly) {

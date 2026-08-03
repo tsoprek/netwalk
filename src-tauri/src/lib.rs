@@ -17,13 +17,13 @@ fn install_macos_dev_icon() -> Result<(), String> {
     use objc2_app_kit::{NSApplication, NSImage};
     use objc2_foundation::NSData;
 
-    const DEV_ICON: &[u8] = include_bytes!("../icons-beta-source.png");
+    const DEV_ICON: &[u8] = include_bytes!("../icons-standalone/icon.png");
     let marker = MainThreadMarker::new()
         .ok_or_else(|| "Tauri setup did not run on the macOS main thread".to_string())?;
     let application = NSApplication::sharedApplication(marker);
     let data = NSData::with_bytes(DEV_ICON);
     let image = NSImage::initWithData(NSImage::alloc(), &data)
-        .ok_or_else(|| "macOS could not decode the black-cat development icon".to_string())?;
+        .ok_or_else(|| "macOS could not decode the Terminal Cat development icon".to_string())?;
     // SAFETY: AppKit retains the image. Tauri invokes setup on the main thread
     // after NSApplication has been initialized.
     unsafe { application.setApplicationIconImage(Some(&image)) };
@@ -1005,12 +1005,12 @@ pub fn run() {
 
     app.run(|_app_handle, _event| {
         // Tauri installs the configured development icon during its own Ready
-        // handler. Apply the black-cat icon afterward so it is not immediately
-        // replaced by the production icon from tauri.conf.json.
+        // handler. Apply the Terminal Cat icon afterward so development uses
+        // the same standalone branding as packaged builds.
         #[cfg(all(debug_assertions, target_os = "macos"))]
         if matches!(_event, tauri::RunEvent::Ready) {
             match install_macos_dev_icon() {
-                Ok(()) => tracing::debug!("installed black-cat Tauri development icon"),
+                Ok(()) => tracing::debug!("installed Terminal Cat Tauri development icon"),
                 Err(error) => tracing::warn!(%error, "could not install Tauri development icon"),
             }
         }
