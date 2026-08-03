@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="tile" x1="180" y1="100" x2="850" y2="930" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#173f60"/>
+      <stop offset="1" stop-color="#081b2b"/>
+    </linearGradient>
+    <linearGradient id="outline" x1="260" y1="240" x2="760" y2="790" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#80c7ff"/>
+      <stop offset="1" stop-color="#4a9ee8"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="28" stdDeviation="32" flood-color="#000814" flood-opacity=".45"/>
+    </filter>
+  </defs>
+
+  <rect x="68" y="68" width="888" height="888" rx="224" fill="url(#tile)" filter="url(#shadow)"/>
+  <rect x="86" y="86" width="852" height="852" rx="206" fill="none" stroke="#65b5ff" stroke-opacity=".22" stroke-width="6"/>
+
+  <path
+    d="M258 398 366 260l91 61h110l91-61 108 138v239c0 112-91 203-203 203H461c-112 0-203-91-203-203Z"
+    fill="#0b2438"
+    stroke="url(#outline)"
+    stroke-width="42"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="m377 481 93 75-93 75m180 0h105"
+    fill="none"
+    stroke="#8ce6d1"
+    stroke-width="38"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

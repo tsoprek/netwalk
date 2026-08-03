@@ -38,11 +38,11 @@
     "targets": "all",
     "createUpdaterArtifacts": false,
     "icon": [
-      "icons-beta/32x32.png",
-      "icons-beta/128x128.png",
-      "icons-beta/128x128@2x.png",
-      "icons-beta/icon.icns",
-      "icons-beta/icon.ico"
+      "icons-standalone/32x32.png",
+      "icons-standalone/128x128.png",
+      "icons-standalone/128x128@2x.png",
+      "icons-standalone/icon.icns",
+      "icons-standalone/icon.ico"
     ]
   },
   "plugins": {

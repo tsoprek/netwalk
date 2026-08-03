@@ -33,10 +33,7 @@ export default function StandaloneTopbarIcon({
     return (
       <svg {...common}>
         <path d="M3.5 8 7 3.5l3 2h4l3-2L20.5 8v8a5 5 0 0 1-5 5h-7a5 5 0 0 1-5-5Z" />
-        <circle {...secondary} cx="8.5" cy="11.5" r="1.15" />
-        <circle {...secondary} cx="15.5" cy="11.5" r="1.15" />
-        <circle {...secondary} cx="12" cy="16" r="1.15" />
-        <path {...secondary} d="m9.4 12.4 1.8 2.5m3.4-2.5-1.8 2.5" />
+        <path {...secondary} d="m7.5 11 2.5 2-2.5 2m5 0h4" />
       </svg>
     );
   }
