@@ -140,6 +140,21 @@ fn onepassword_command() -> std::process::Command {
     command
 }
 
+fn onepassword_cli_not_found_message() -> &'static str {
+    #[cfg(target_os = "macos")]
+    {
+        "1Password CLI is not installed or is not available in PATH. Install it with `brew install 1password-cli`, then restart ConneCat."
+    }
+    #[cfg(target_os = "windows")]
+    {
+        "1Password CLI is not installed or is not available in PATH. Install it with `winget install 1password-cli`, then restart ConneCat."
+    }
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    {
+        "1Password CLI is not installed or is not available in PATH. Install the 1Password CLI for your operating system, then restart ConneCat."
+    }
+}
+
 fn onepassword_output(mut command: std::process::Command) -> Result<Vec<u8>, String> {
     // Do not log arguments: item and vault identifiers can appear there. The
     // executable and process metadata are sufficient to diagnose discovery and
@@ -156,7 +171,7 @@ fn onepassword_output(mut command: std::process::Command) -> Result<Vec<u8>, Str
             "Failed to start 1Password CLI"
         );
         if error.kind() == std::io::ErrorKind::NotFound {
-            "1Password CLI is not installed or is not available in PATH".to_string()
+            onepassword_cli_not_found_message().to_string()
         } else {
             format!("failed to start 1Password CLI: {error}")
         }
@@ -1464,9 +1479,20 @@ mod webview_recovery_tests {
 #[cfg(test)]
 mod onepassword_tests {
     use super::{
-        first_existing_executable, onepassword_error_code, onepassword_item_reference,
-        onepassword_login_from_item, onepassword_login_items,
+        first_existing_executable, onepassword_cli_not_found_message, onepassword_error_code,
+        onepassword_item_reference, onepassword_login_from_item, onepassword_login_items,
     };
+
+    #[test]
+    fn reports_platform_specific_cli_install_instructions() {
+        let message = onepassword_cli_not_found_message();
+        assert!(message.contains("1Password CLI is not installed or is not available in PATH"));
+        assert!(message.contains("restart ConneCat"));
+        #[cfg(target_os = "macos")]
+        assert!(message.contains("brew install 1password-cli"));
+        #[cfg(target_os = "windows")]
+        assert!(message.contains("winget install 1password-cli"));
+    }
 
     #[cfg(unix)]
     #[test]
