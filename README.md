@@ -48,3 +48,18 @@ cargo check -p connecat-client
 
 The repository includes a Linux GitHub Actions build check. Install your
 distribution's FreeRDP package (for example `freerdp2-x11`) to launch RDP.
+
+## Windows without development tools
+
+Do not use `tauri dev` on the destination computer. Build the installer with
+the **Windows installer** GitHub Actions workflow instead:
+
+1. Open the repository's **Actions** tab on GitHub.
+2. Select **Windows installer**, then choose **Run workflow**.
+3. Open the completed workflow run and download the
+   `connecat-windows-msi` artifact.
+4. Extract the artifact and run the `.msi` on the Windows computer.
+
+The Windows computer needs the Microsoft Edge WebView2 Runtime, which is
+already included with supported Windows 10 and Windows 11 installations. It
+does not need Node.js, Rust, Git, Visual Studio, or the Tauri CLI.
