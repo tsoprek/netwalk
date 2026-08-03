@@ -1,12 +1,12 @@
 import type { ThemeSchemeOverride } from "../api/appearance";
 
-// Exact Light / Medium / Dark window palettes exported from the production
-// Catwalk site configuration. Standalone ConneCat has no portal configuration
-// endpoint, so these must remain a local mirror of the production values.
+// Light / Medium / Dark window palettes derived from the production Catwalk
+// configuration, with standalone-safe display names and only the themes that
+// ConneCat exposes.
 const PRODUCTION_OVERRIDES: Record<string, ThemeSchemeOverride> = {
       "cisco": {
         "defaultScheme": "medium",
-        "label": "Cisco",
+        "label": "Ocean Blue",
         "schemes": {
           "dark": {
             "window": {
@@ -39,84 +39,6 @@ const PRODUCTION_OVERRIDES: Record<string, ThemeSchemeOverride> = {
               "inputBg": "#253c4b",
               "muted": "#7d9bb8",
               "panel": "#003459"
-            }
-          }
-        }
-      },
-      "cisco-black-cat": {
-        "defaultScheme": "medium",
-        "label": "Cisco Black Cat",
-        "schemes": {
-          "dark": {
-            "window": {
-              "bg": "#00111d",
-              "border": "#003d61",
-              "btnFg": "#ffffff",
-              "fg": "#eaf6fc",
-              "inputBg": "#000d16",
-              "muted": "#6e8ca7",
-              "panel": "#001f33"
-            }
-          },
-          "light": {
-            "window": {
-              "bg": "#f2f8fb",
-              "border": "#a9cfdf",
-              "btnFg": "#ffffff",
-              "fg": "#102f40",
-              "inputBg": "#f8fcfe",
-              "muted": "#5f7b8b",
-              "panel": "#ffffff"
-            }
-          },
-          "medium": {
-            "window": {
-              "bg": "#002238",
-              "border": "#e2c800",
-              "btnFg": "#ffffff",
-              "fg": "#e5f1f8",
-              "inputBg": "#253c4b",
-              "muted": "#7d9bb8",
-              "panel": "#245887"
-            }
-          }
-        }
-      },
-      "cisco-black-cat-2": {
-        "defaultScheme": "medium",
-        "label": "Cisco Black Cat",
-        "schemes": {
-          "dark": {
-            "window": {
-              "bg": "#0f172a",
-              "border": "#334155",
-              "btnFg": "#0f172a",
-              "fg": "#e2e8f0",
-              "inputBg": "#162235",
-              "muted": "#94a3b8",
-              "panel": "#1e293b"
-            }
-          },
-          "light": {
-            "window": {
-              "bg": "#f8fafc",
-              "border": "#cbd5e1",
-              "btnFg": "#ffffff",
-              "fg": "#0f172a",
-              "inputBg": "#f8fafc",
-              "muted": "#64748b",
-              "panel": "#ffffff"
-            }
-          },
-          "medium": {
-            "window": {
-              "bg": "#193e62",
-              "border": "#0a0817",
-              "btnFg": "#ffffff",
-              "fg": "#e5f1f8",
-              "inputBg": "rgba(0, 0, 0, 0)",
-              "muted": "#7d9bb8",
-              "panel": "#00477b"
             }
           }
         }
@@ -591,7 +513,7 @@ const PRODUCTION_OVERRIDES: Record<string, ThemeSchemeOverride> = {
       },
       "thousandeyes-steel": {
         "defaultScheme": "medium",
-        "label": "ThousandEyes Steel",
+        "label": "Steel Horizon",
         "schemes": {
           "dark": {
             "window": {

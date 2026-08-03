@@ -433,59 +433,6 @@ body {
   animation: rainbow-shift 4s linear infinite;
 }
 
-/* Cisco Black Cat keeps the uploaded logo intact and paints a tiny animated
-   pair of eyes over the source artwork. The pupils occasionally inspect the
-   topbar, with a quick double blink between glances. */
-.brand-black-cat {
-  position: relative;
-  display: inline-flex;
-  flex: 0 0 auto;
-  width: 36px;
-  height: 36px;
-  pointer-events: none;
-}
-.brand-black-cat > .brand-logo {
-  width: 100%;
-  height: 100%;
-}
-.brand-black-cat__eye {
-  position: absolute;
-  top: 33.2%;
-  width: 14.1%;
-  height: 10.8%;
-  overflow: hidden;
-  background: #ffda1f;
-  transform-origin: 50% 50%;
-  animation: black-cat-blink 13s ease-in-out infinite;
-}
-.brand-black-cat__eye--left {
-  left: 32%;
-  clip-path: polygon(0 0, 100% 19%, 88% 72%, 56% 100%, 20% 82%, 5% 48%);
-}
-.brand-black-cat__eye--right {
-  left: 54.3%;
-  clip-path: polygon(0 19%, 100% 0, 95% 48%, 80% 82%, 44% 100%, 12% 72%);
-}
-.brand-black-cat__pupil {
-  position: absolute;
-  top: 16%;
-  left: 38%;
-  width: 31%;
-  height: 72%;
-  border-radius: 50%;
-  background: #34343f;
-  animation: black-cat-look 13s ease-in-out infinite;
-}
-@keyframes black-cat-look {
-  0%, 8%, 28%, 39%, 59%, 100% { transform: translateX(0); }
-  13%, 23% { transform: translateX(-42%); }
-  44%, 54% { transform: translateX(42%); }
-}
-@keyframes black-cat-blink {
-  0%, 66%, 68%, 70%, 72%, 100% { transform: scaleY(1); }
-  67%, 71% { transform: scaleY(0.08); }
-}
-
 /* The walking cat is painted onto a chroma-keyed canvas in App.tsx, so the
    old video's dark matte never reaches layout. Keep the displayed element
    itself transparent; the hidden video is only a frame source. */
@@ -3775,10 +3722,6 @@ main:has(.terminals-shell) { padding: 0; overflow: hidden; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .brand-black-cat__eye,
-  .brand-black-cat__pupil {
-    animation: none;
-  }
   .winter-hint__text {
     animation: none;
   }

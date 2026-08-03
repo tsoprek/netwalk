@@ -160,9 +160,9 @@ const TERMINAL_PRESETS: { id: string; label: string; theme: Record<string, strin
     },
   },
   {
-    // Production ThousandEyes navy palette.
+    // Deep navy palette with a warm copper cursor and accent.
     id: "thousandeyes",
-    label: "ThousandEyes (Navy)",
+    label: "Midnight Copper",
     theme: {
       background: "#222e45",
       foreground: "#d6deea",
@@ -190,7 +190,7 @@ const TERMINAL_PRESETS: { id: string; label: string; theme: Record<string, strin
     // Lighter steel-blue variant of the company palette. Still a deep blue,
     // just less inky than Navy. Same orange accent.
     id: "thousandeyes-steel",
-    label: "ThousandEyes (Steel)",
+    label: "Steel Horizon",
     theme: {
       background: "#324a6b",
       foreground: "#e3e9f2",
@@ -272,9 +272,9 @@ const TERMINAL_PRESETS: { id: string; label: string; theme: Record<string, strin
     },
   },
   {
-    // ConneCat: deep navy background with a clear blue cursor and accents.
+    // Ocean Blue: deep navy background with a clear blue cursor and accents.
     id: "cisco",
-    label: "Cisco",
+    label: "Ocean Blue",
     theme: {
       background: "#00253d",
       foreground: "#e5f1f8",
@@ -767,7 +767,7 @@ const BRAND_PRESETS: {
 }[] = [
     {
       id: "thousandeyes",
-      label: "ThousandEyes",
+      label: "Midnight Copper",
       accent: "#fb7c32",
       colorScheme: "dark",
       terminalPresetId: "thousandeyes",
@@ -783,7 +783,7 @@ const BRAND_PRESETS: {
     },
     {
       id: "thousandeyes-steel",
-      label: "ThousandEyes (Steel)",
+      label: "Steel Horizon",
       accent: "#fb7c32",
       colorScheme: "dark",
       terminalPresetId: "thousandeyes-steel",
@@ -833,7 +833,7 @@ const BRAND_PRESETS: {
     },
     {
       id: "cisco",
-      label: "Cisco",
+      label: "Ocean Blue",
       accent: "#049fd9",
       colorScheme: "medium",
       terminalPresetId: "cisco",
@@ -844,38 +844,6 @@ const BRAND_PRESETS: {
         muted: "#7d9bb8",
         border: "#004d7a",
         inputBg: "#253c4b",
-        btnFg: "#ffffff",
-      },
-    },
-    {
-      id: "cisco-black-cat",
-      label: "Cisco Black Cat",
-      accent: "#e2c800",
-      colorScheme: "medium",
-      terminalPresetId: "cisco",
-      window: {
-        bg: "#002238",
-        panel: "#245887",
-        fg: "#e5f1f8",
-        muted: "#7d9bb8",
-        border: "#e2c800",
-        inputBg: "#253c4b",
-        btnFg: "#ffffff",
-      },
-    },
-    {
-      id: "cisco-black-cat-2",
-      label: "Cisco Black Cat 2",
-      accent: "#e2c800",
-      colorScheme: "medium",
-      terminalPresetId: "cisco",
-      window: {
-        bg: "#193e62",
-        panel: "#00477b",
-        fg: "#e5f1f8",
-        muted: "#7d9bb8",
-        border: "#0a0817",
-        inputBg: "rgba(0, 0, 0, 0)",
         btnFg: "#ffffff",
       },
     },
@@ -1325,7 +1293,7 @@ export default function Settings() {
           b.window = { ...authoredSchemeWindow };
         } else if (v && nativeScheme && v === nativeScheme) {
           // Returning to a preset's native mode restores its authored window
-          // palette (for example Pride purple or Cisco navy).
+          // palette (for example Pride purple or Ocean Blue navy).
           b.window = { ...(nativeWindow ?? {}) };
         } else {
           delete b.window;

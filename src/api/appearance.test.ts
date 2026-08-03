@@ -6,10 +6,48 @@ import {
   getEffectiveAccent,
   getEffectiveTerminalAnsiAccent,
   getScheduledThemePeriod,
+  migrateRemovedThemePrefs,
   resolveAppearance,
 } from "./appearance";
 
 describe("appearance terminal ANSI accent", () => {
+  it("migrates deleted Black Cat themes and scheduled targets to Ocean Blue", () => {
+    const migrated = migrateRemovedThemePrefs({
+      brand: {
+        id: "cisco-black-cat-2",
+        identity: "default",
+        name: "Cisco Black Cat 2",
+        accent: "#e2c800",
+        window: { bg: "#193e62" },
+      },
+      themeSchedule: {
+        enabled: true,
+        dayStart: "08:00",
+        nightStart: "20:00",
+        day: {
+          themeValue: "builtin:cisco-black-cat",
+          colorScheme: "medium",
+          brand: { id: "cisco-black-cat", accent: "#e2c800" },
+        },
+        night: {
+          themeValue: "builtin:got",
+          colorScheme: "dark",
+          brand: { id: "got", accent: "#c8102e" },
+        },
+      },
+    });
+
+    expect(migrated.brand).toEqual({
+      id: "cisco",
+      identity: "default",
+      name: "ConneCat",
+      logoUrl: "",
+      accent: "#049fd9",
+    });
+    expect(migrated.themeSchedule?.day.themeValue).toBe("builtin:cisco");
+    expect(migrated.themeSchedule?.day.brand.id).toBe("cisco");
+    expect(migrated.themeSchedule?.night.themeValue).toBe("builtin:got");
+  });
   it("defaults the terminal renderer to Auto and accepts valid overrides", () => {
     expect(resolveAppearance({}, {}).terminalRenderer).toBe("auto");
     expect(resolveAppearance({}, { terminalRenderer: "dom" }).terminalRenderer).toBe("dom");
@@ -757,11 +795,11 @@ describe("appearance brand identity isolation", () => {
     expect(getEffectiveAccent(medium)).toBe("#d9e1e7");
   });
 
-  it("applies portal scheme palettes to a site-created theme such as Cisco Black Cat", () => {
+  it("applies scheme palettes to a custom site-created theme", () => {
     const appearance = resolveAppearance(
       {
         themeSchemeOverrides: {
-          "cisco-black-cat": {
+          "night-owl": {
             defaultScheme: "medium",
             schemes: {
               dark: { window: { bg: "#00111d", panel: "#001f33" } },
@@ -772,17 +810,17 @@ describe("appearance brand identity isolation", () => {
       {
         colorScheme: "dark",
         brand: {
-          id: "cisco-black-cat",
+          id: "night-owl",
           identity: "custom",
-          name: "Cisco Black Cat",
-          logoUrl: "cat.png",
+          name: "Night Owl",
+          logoUrl: "owl.png",
           window: { bg: "#00253d" },
         },
       },
     );
 
-    expect(appearance.brand.id).toBe("cisco-black-cat");
-    expect(appearance.brand.logoUrl).toBe("cat.png");
+    expect(appearance.brand.id).toBe("night-owl");
+    expect(appearance.brand.logoUrl).toBe("owl.png");
     expect(appearance.brand.window.bg).toBe("#00111d");
     expect(appearance.brand.window.panel).toBe("#001f33");
   });
