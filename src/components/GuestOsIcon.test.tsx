@@ -19,16 +19,16 @@ describe("Rocky Linux device icon", () => {
     expect(rawType).toContain('title="rocky"');
     expect(versionedType).toContain('title="rocky-linux-9"');
     expect(detected).toContain('title="Rocky Linux 9 (64-bit)"');
-    expect(explicit).toContain("#10b981");
-    expect(rawType).toContain("#10b981");
-    expect(versionedType).toContain("#10b981");
-    expect(detected).toContain("#10b981");
+    expect(explicit).toContain('data-icon-kind="rocky"');
+    expect(rawType).toContain('data-icon-kind="rocky"');
+    expect(versionedType).toContain('data-icon-kind="rocky"');
+    expect(detected).toContain('data-icon-kind="rocky"');
   });
 
   it("uses Autopilot's structured guest OS type", () => {
     const detected = renderToStaticMarkup(<GuestOsIcon osType="RHEL9_64GUEST" />);
     expect(detected).toContain('title="RHEL9_64GUEST"');
-    expect(detected).toContain("#cc0000");
+    expect(detected).toContain('data-icon-kind="rhel"');
   });
 });
 
@@ -46,7 +46,7 @@ describe("CML node-definition icons", () => {
     expect(firewall).toContain('title="asav"');
     expect(firewall).toContain('data-icon-kind="network_firewall"');
     expect(linux).toContain('title="ubuntu-22-04"');
-    expect(linux).toContain("#e95420");
+    expect(linux).toContain('data-icon-kind="ubuntu"');
   });
 
   it("maps CML SD-WAN definitions and TEVA Ubuntu appliances", () => {
@@ -57,8 +57,8 @@ describe("CML node-definition icons", () => {
     expect(manager).toContain('title="cat-sdwan-manager"');
     expect(manager).toContain("<circle");
     expect(teva).toContain('title="TEVA"');
-    expect(teva).toContain("#e95420");
-    expect(legacyTeva).toContain("#e95420");
+    expect(teva).toContain('data-icon-kind="ubuntu"');
+    expect(legacyTeva).toContain('data-icon-kind="ubuntu"');
   });
 
   it("shows a fallback tile for an unknown CML definition when requested", () => {

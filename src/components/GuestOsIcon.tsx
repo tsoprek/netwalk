@@ -484,10 +484,9 @@ export default function GuestOsIcon({
           display: "inline-flex", alignItems: "center", justifyContent: "center",
           width: tile, height: tile, borderRadius: radius,
           boxSizing: "border-box",
-          border: "1px solid color-mix(in srgb, currentColor 24%, transparent)",
-          background: `linear-gradient(145deg, color-mix(in srgb, ${kind.bg} 78%, white), ${kind.bg})`,
-          boxShadow: "inset 0 1px 0 color-mix(in srgb, white 24%, transparent), 0 1px 2px color-mix(in srgb, black 24%, transparent)",
-          color: "#fff",
+          border: "1px solid color-mix(in srgb, var(--accent) 48%, var(--border))",
+          background: "color-mix(in srgb, var(--accent) 10%, transparent)",
+          color: "var(--accent)",
         }}
       >
         <Glyph s={Math.round(tile * 0.7)} />
@@ -504,10 +503,9 @@ export default function GuestOsIcon({
         display: "inline-flex", alignItems: "center", justifyContent: "center",
         width: tile, height: tile, borderRadius: 5,
         boxSizing: "border-box",
-        border: "1px solid color-mix(in srgb, currentColor 22%, transparent)",
-        background: `linear-gradient(145deg, color-mix(in srgb, ${kind.bg} 78%, white), ${kind.bg})`,
-        boxShadow: "inset 0 1px 0 color-mix(in srgb, white 22%, transparent)",
-        color: "#fff",
+        border: "1px solid color-mix(in srgb, var(--accent) 48%, var(--border))",
+        background: "color-mix(in srgb, var(--accent) 10%, transparent)",
+        color: "var(--accent)",
         verticalAlign: "middle",
       }}
     >
