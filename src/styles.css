@@ -3149,6 +3149,7 @@ main:has(.terminals-shell) { padding: 0; overflow: hidden; }
   border-bottom: 1px solid var(--border) !important;
 }
 .template-tree-root-card.is-open > .template-tree-root-row + div {
+  padding-top: 6px;
   padding-bottom: 6px;
 }
 .template-tree-group-card {
