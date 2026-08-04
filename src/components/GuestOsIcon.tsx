@@ -32,35 +32,67 @@ interface Kind {
   bg: string;
 }
 
-const PRIMARY_BLUE = "#1976d2";
+const ICON_COLORS = {
+  router: "#2563eb",
+  switch: "#0891b2",
+  firewall: "#dc2626",
+  wireless: "#7c3aed",
+  loadBalancer: "#0f766e",
+  server: "#475569",
+  workstation: "#2563eb",
+  cloud: "#0284c7",
+  container: "#0369a1",
+  database: "#7c3aed",
+  storage: "#64748b",
+} as const;
 
 /// Selectable values for the user-facing "Type / OS icon" override.
 /// `value: ""` means "auto-detect".
 export const DEVICE_TYPE_OPTIONS: { value: string; label: string }[] = [
-  { value: "network_router", label: "Router" },
-  { value: "network_switch", label: "Switch" },
-  { value: "network_firewall", label: "Firewall (ASA/FTD)" },
-  { value: "network_nxos", label: "Nexus (NX-OS)" },
-  { value: "network_sdwan", label: "SD-WAN" },
+  { value: "network_router", label: "Network — Router" },
+  { value: "network_l3_switch", label: "Network — Layer 3 switch" },
+  { value: "network_switch", label: "Network — Switch" },
+  { value: "network_firewall", label: "Network — Firewall" },
+  { value: "network_wireless", label: "Network — Wireless / access point" },
+  { value: "network_load_balancer", label: "Network — Load balancer" },
+  { value: "network_sdwan", label: "Network — SD-WAN" },
+  { value: "hardware_server", label: "Hardware — Server" },
+  { value: "hardware_workstation", label: "Hardware — Workstation" },
+  { value: "infrastructure_cloud", label: "Infrastructure — Cloud" },
+  { value: "infrastructure_container", label: "Infrastructure — Container" },
+  { value: "infrastructure_database", label: "Infrastructure — Database" },
+  { value: "infrastructure_storage", label: "Infrastructure — Storage / NAS" },
+  { value: "windows_desktop", label: "Windows — Desktop" },
   { value: "linux_ubuntu", label: "Linux \u2014 Ubuntu" },
   { value: "linux_rocky", label: "Linux \u2014 Rocky" },
   { value: "linux_rhel", label: "Linux \u2014 RHEL / CentOS" },
   { value: "linux_debian", label: "Linux \u2014 Debian" },
   { value: "linux_alpine", label: "Linux \u2014 Alpine" },
   { value: "linux_generic", label: "Linux \u2014 generic" },
-  { value: "windows_server", label: "Windows server" },
+  { value: "windows_server", label: "Windows — Server" },
+  { value: "macos", label: "macOS" },
+  { value: "bsd", label: "BSD / FreeBSD" },
+  { value: "solaris", label: "Solaris" },
 ];
 
 function classify(family?: string | null, fullName?: string | null, deviceType?: string | null): Kind | null {
   const dt = (deviceType || "").toLowerCase();
   // 1) Hardware device types — explicit wins.
-  if (dt === "network_router") return { key: "network_router", label: "Router", bg: PRIMARY_BLUE };
-  if (dt === "network_switch") return { key: "network_switch", label: "Switch", bg: PRIMARY_BLUE };
-  if (dt === "network_firewall") return { key: "network_firewall", label: "Firewall", bg: PRIMARY_BLUE };
-  if (dt === "network_nxos") return { key: "network_switch", label: "Nexus", bg: PRIMARY_BLUE };
-  if (dt === "network_sdwan") return { key: "network_router", label: "SD-WAN", bg: PRIMARY_BLUE };
+  if (dt === "network_router") return { key: "network_router", label: "Router", bg: ICON_COLORS.router };
+  if (dt === "network_l3_switch" || dt === "network_nxos") return { key: "network_l3_switch", label: "Layer 3 switch", bg: ICON_COLORS.switch };
+  if (dt === "network_switch") return { key: "network_switch", label: "Switch", bg: ICON_COLORS.switch };
+  if (dt === "network_firewall") return { key: "network_firewall", label: "Firewall", bg: ICON_COLORS.firewall };
+  if (dt === "network_wireless") return { key: "network_wireless", label: "Wireless", bg: ICON_COLORS.wireless };
+  if (dt === "network_load_balancer") return { key: "network_load_balancer", label: "Load balancer", bg: ICON_COLORS.loadBalancer };
+  if (dt === "network_sdwan") return { key: "network_router", label: "SD-WAN", bg: ICON_COLORS.router };
+  if (dt === "hardware_server") return { key: "server", label: "Server", bg: ICON_COLORS.server };
+  if (dt === "hardware_workstation") return { key: "workstation", label: "Workstation", bg: ICON_COLORS.workstation };
+  if (dt === "infrastructure_cloud") return { key: "cloud", label: "Cloud", bg: ICON_COLORS.cloud };
+  if (dt === "infrastructure_container") return { key: "container", label: "Container", bg: ICON_COLORS.container };
+  if (dt === "infrastructure_database") return { key: "database", label: "Database", bg: ICON_COLORS.database };
+  if (dt === "infrastructure_storage") return { key: "storage", label: "Storage", bg: ICON_COLORS.storage };
   if (/(^|[-_])cat[-_]?sdwan(?:[-_]|$)/.test(dt) || /(^|[-_])sd[-_]?wan(?:[-_]|$)/.test(dt)) {
-    return { key: "network_router", label: "SD-WAN", bg: PRIMARY_BLUE };
+    return { key: "network_router", label: "SD-WAN", bg: ICON_COLORS.router };
   }
   if (/(^|[-_])teva(?:[-_]|$)/.test(dt)) return { key: "ubuntu", label: "Ubuntu", bg: "#e95420" };
   if (dt === "linux_ubuntu") return { key: "ubuntu", label: "Ubuntu", bg: "#e95420" };
@@ -74,19 +106,53 @@ function classify(family?: string | null, fullName?: string | null, deviceType?:
   if (dt === "linux_debian") return { key: "debian", label: "Debian", bg: "#a81d33" };
   if (dt === "linux_alpine") return { key: "alpine", label: "Alpine", bg: "#0d597f" };
   if (dt === "linux_generic" || dt === "linux_server") return { key: "tux", label: "Linux", bg: "#555" };
-  if (dt === "windows_server") return { key: "windows", label: "Windows", bg: "#0078d4" };
+  if (dt === "windows_server") return { key: "server", label: "Windows Server", bg: "#0078d4" };
+  if (dt === "windows_desktop") return { key: "windows", label: "Windows", bg: "#0078d4" };
+  if (dt === "macos") return { key: "macos", label: "macOS", bg: "#334155" };
+  if (dt === "bsd") return { key: "bsd", label: "BSD", bg: "#b91c1c" };
+  if (dt === "solaris") return { key: "solaris", label: "Solaris", bg: "#ea580c" };
+
+  if (/(^|[-_])(wireless|wifi|access[-_]?point|wlan|wap)([-_]|$)/.test(dt)) {
+    return { key: "network_wireless", label: "Wireless", bg: ICON_COLORS.wireless };
+  }
+  if (/(^|[-_])(load[-_]?balancer|bigip|haproxy|lb)([-_]|$)/.test(dt)) {
+    return { key: "network_load_balancer", label: "Load balancer", bg: ICON_COLORS.loadBalancer };
+  }
+  if (/(^|[-_])(firewall|pfsense|opnsense|panos|fortios|fortigate|srx|checkpoint)([-_]|$)/.test(dt)) {
+    return { key: "network_firewall", label: "Firewall", bg: ICON_COLORS.firewall };
+  }
+  if (/(^|[-_])(cloud|aws|azure|gcp)([-_]|$)/.test(dt)) {
+    return { key: "cloud", label: "Cloud", bg: ICON_COLORS.cloud };
+  }
+  if (/(^|[-_])(container|docker|kubernetes|k8s|pod)([-_]|$)/.test(dt)) {
+    return { key: "container", label: "Container", bg: ICON_COLORS.container };
+  }
+  if (/(^|[-_])(database|postgres|postgresql|mysql|mariadb|mongodb|redis|db)([-_]|$)/.test(dt)) {
+    return { key: "database", label: "Database", bg: ICON_COLORS.database };
+  }
+  if (/(^|[-_])(storage|nas|san|fileserver)([-_]|$)/.test(dt)) {
+    return { key: "storage", label: "Storage", bg: ICON_COLORS.storage };
+  }
+  if (/(^|[-_])(workstation|desktop|laptop)([-_]|$)/.test(dt)) {
+    return { key: "workstation", label: "Workstation", bg: ICON_COLORS.workstation };
+  }
+  if (/(^|[-_])(server|baremetal|bare[-_]?metal)([-_]|$)/.test(dt)) {
+    return { key: "server", label: "Server", bg: ICON_COLORS.server };
+  }
 
   // CML node definitions. More specific switch/firewall definitions must
   // precede the broad IOS/router match.
+  if (/(^|[-_])(nxosv?|eos|veos|vqfx|cumulus|sonic|l3[-_]?switch)([-_]|$)/.test(dt)) {
+    return { key: "network_l3_switch", label: "Layer 3 switch", bg: ICON_COLORS.switch };
+  }
   if (
-    /(^|[-_])(iosvl2|iol[-_]?l2|nxosv|nxos|cat9kv|cat9000v|unmanaged[-_]?switch)([-_]|$)/.test(dt)
+    /(^|[-_])(iosvl2|iol[-_]?l2|cat9kv|cat9000v|unmanaged[-_]?switch|bridge)([-_]|$)/.test(dt)
     || dt.startsWith("iosvl2")
     || dt.startsWith("iol-l2")
-    || dt.startsWith("nxos")
     || dt.startsWith("cat9")
     || dt.includes("switch")
   ) {
-    return { key: "network_switch", label: "Switch", bg: PRIMARY_BLUE };
+    return { key: "network_switch", label: "Switch", bg: ICON_COLORS.switch };
   }
   if (
     /(^|[-_])(asav|ftdv?|firepower)([-_]|$)/.test(dt)
@@ -94,10 +160,10 @@ function classify(family?: string | null, fullName?: string | null, deviceType?:
     || dt.startsWith("ftd")
     || dt.includes("firewall")
   ) {
-    return { key: "network_firewall", label: "Firewall", bg: PRIMARY_BLUE };
+    return { key: "network_firewall", label: "Firewall", bg: ICON_COLORS.firewall };
   }
   if (
-    /(^|[-_])(iosv|iosxe|iosxr|iosxrv|xrv|csr1000v|c8000v|cat8000v|iol|vios|router)([-_]|$)/.test(dt)
+    /(^|[-_])(iosv|iosxe|iosxr|iosxrv|xrv|csr1000v|c8000v|cat8000v|iol|vios|router|vyos|routeros|junos|vjunos|mikrotik|chr)([-_]|$)/.test(dt)
     || dt.startsWith("ios")
     || dt.startsWith("xrv")
     || dt.startsWith("iol")
@@ -105,7 +171,7 @@ function classify(family?: string | null, fullName?: string | null, deviceType?:
     || dt.startsWith("c8")
     || dt.startsWith("cat8")
   ) {
-    return { key: "network_router", label: "Router", bg: PRIMARY_BLUE };
+    return { key: "network_router", label: "Router", bg: ICON_COLORS.router };
   }
   if (dt.includes("ubuntu")) return { key: "ubuntu", label: "Ubuntu", bg: "#e95420" };
   if (dt.includes("alpine")) return { key: "alpine", label: "Alpine", bg: "#0d597f" };
@@ -119,7 +185,7 @@ function classify(family?: string | null, fullName?: string | null, deviceType?:
   const full = (fullName || "").toLowerCase();
   if (/(^|[-_/\s])teva(?:[-_/\s]|$)/.test(full)) return { key: "ubuntu", label: "Ubuntu", bg: "#e95420" };
   if (/(^|[-_/\s])(?:cat[-_]?sdwan|sd[-_]?wan)(?:[-_/\s]|$)/.test(full)) {
-    return { key: "network_router", label: "SD-WAN", bg: PRIMARY_BLUE };
+    return { key: "network_router", label: "SD-WAN", bg: ICON_COLORS.router };
   }
   if (full.includes("ubuntu")) return { key: "ubuntu", label: "Ubuntu", bg: "#e95420" };
   if (full.includes("rocky")) return { key: "rocky", label: "Rocky", bg: "#10b981" };
@@ -148,27 +214,100 @@ function classify(family?: string | null, fullName?: string | null, deviceType?:
 function Router({ s }: { s: number }) {
   return (
     <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
-      <circle cx="12" cy="12" r="6" fill="none" stroke="#fff" strokeWidth="1.6" />
-      <path d="M12 3v3M12 18v3M3 12h3M18 12h3M8.5 8.5l-2 2M15.5 15.5l2 -2M8.5 15.5l-2 -2M15.5 8.5l2 2"
-        stroke="#fff" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M8 12h8m-2.5-2.5L16 12l-2.5 2.5M10.5 7.5 8 10l2.5 2.5m3-1L16 14l-2.5 2.5"
+        fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 function Switch({ s }: { s: number }) {
   return (
     <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
-      <rect x="3" y="9" width="18" height="7" rx="1.5" fill="none" stroke="#fff" strokeWidth="1.6" />
-      {[7, 10, 13, 16, 19].map((cx) => <circle key={cx} cx={cx} cy="12.5" r="0.9" fill="#fff" />)}
-      <path d="M5 9V6m14 3V6" stroke="#fff" strokeWidth="1.4" strokeLinecap="round" />
+      <rect x="3" y="7" width="18" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M7 11h2m2 0h2m2 0h2M7 14h10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+function Layer3Switch({ s }: { s: number }) {
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
+      <rect x="3" y="7" width="18" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <path d="m7 12 2-2m-2 2 2 2m8-2-2-2m2 2-2 2M11 12h2" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 function Firewall({ s }: { s: number }) {
   return (
     <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
-      <path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z"
-        fill="none" stroke="#fff" strokeWidth="1.6" strokeLinejoin="round" />
-      <path d="M9 11h6M9 14h6" stroke="#fff" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M4 5h16v14H4zM4 10h16M9 5v5m6 0v5m-6 0v4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function Wireless({ s }: { s: number }) {
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
+      <path d="M4.5 9.5a11 11 0 0 1 15 0M7.5 12.5a6.8 6.8 0 0 1 9 0M10.4 15.5a2.7 2.7 0 0 1 3.2 0" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <circle cx="12" cy="18" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+function LoadBalancer({ s }: { s: number }) {
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
+      <circle cx="6" cy="6" r="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="18" cy="6" r="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="6" cy="18" r="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M8 6h8M6 8v8m12-8v8M8 18h8M9 12h6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+function Server({ s }: { s: number }) {
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
+      <rect x="4" y="4" width="16" height="6" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="4" y="14" width="16" height="6" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M8 7h.01M8 17h.01M12 7h5M12 17h5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+function Workstation({ s }: { s: number }) {
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
+      <rect x="3" y="4" width="18" height="13" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M8 21h8m-4-4v4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+function Cloud({ s }: { s: number }) {
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
+      <path d="M7 18h10a4 4 0 0 0 .7-7.9A6 6 0 0 0 6.3 9 4.5 4.5 0 0 0 7 18Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function Container({ s }: { s: number }) {
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
+      <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Zm0 0v9m8-4.5L12 12 4 7.5M12 12v9" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function Database({ s }: { s: number }) {
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
+      <ellipse cx="12" cy="5" rx="7" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+function Storage({ s }: { s: number }) {
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden>
+      <rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="12" cy="11" r="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="12" cy="11" r="1" fill="currentColor" />
+      <path d="M7 18h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
@@ -291,8 +430,17 @@ function Unknown({ s }: { s: number }) {
 
 const GLYPHS: Record<string, (p: { s: number }) => JSX.Element> = {
   network_router: Router,
+  network_l3_switch: Layer3Switch,
   network_switch: Switch,
   network_firewall: Firewall,
+  network_wireless: Wireless,
+  network_load_balancer: LoadBalancer,
+  server: Server,
+  workstation: Workstation,
+  cloud: Cloud,
+  container: Container,
+  database: Database,
+  storage: Storage,
   ubuntu: Ubuntu,
   rhel: Rhel,
   rocky: Rocky,
@@ -331,10 +479,15 @@ export default function GuestOsIcon({
     return (
       <span
         title={fullName || osType || deviceType || kind.label}
+        data-icon-kind={kind.key}
         style={{
           display: "inline-flex", alignItems: "center", justifyContent: "center",
           width: tile, height: tile, borderRadius: radius,
-          background: kind.bg, color: "#fff",
+          boxSizing: "border-box",
+          border: "1px solid color-mix(in srgb, currentColor 24%, transparent)",
+          background: `linear-gradient(145deg, color-mix(in srgb, ${kind.bg} 78%, white), ${kind.bg})`,
+          boxShadow: "inset 0 1px 0 color-mix(in srgb, white 24%, transparent), 0 1px 2px color-mix(in srgb, black 24%, transparent)",
+          color: "#fff",
         }}
       >
         <Glyph s={Math.round(tile * 0.7)} />
@@ -346,10 +499,15 @@ export default function GuestOsIcon({
   return (
     <span
       title={fullName || osType || deviceType || kind.label}
+      data-icon-kind={kind.key}
       style={{
         display: "inline-flex", alignItems: "center", justifyContent: "center",
         width: tile, height: tile, borderRadius: 5,
-        background: kind.bg, color: "#fff",
+        boxSizing: "border-box",
+        border: "1px solid color-mix(in srgb, currentColor 22%, transparent)",
+        background: `linear-gradient(145deg, color-mix(in srgb, ${kind.bg} 78%, white), ${kind.bg})`,
+        boxShadow: "inset 0 1px 0 color-mix(in srgb, white 22%, transparent)",
+        color: "#fff",
         verticalAlign: "middle",
       }}
     >

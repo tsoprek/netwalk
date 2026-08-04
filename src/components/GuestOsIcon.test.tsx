@@ -40,11 +40,11 @@ describe("CML node-definition icons", () => {
     const linux = renderToStaticMarkup(<GuestOsIcon deviceType="ubuntu-22-04" />);
 
     expect(router).toContain('title="iosv"');
-    expect(router).toContain("<circle");
+    expect(router).toContain('data-icon-kind="network_router"');
     expect(switchNode).toContain('title="iosvl2"');
-    expect(switchNode).toContain("<rect");
+    expect(switchNode).toContain('data-icon-kind="network_switch"');
     expect(firewall).toContain('title="asav"');
-    expect(firewall).toContain('d="M12 3l8 3v5');
+    expect(firewall).toContain('data-icon-kind="network_firewall"');
     expect(linux).toContain('title="ubuntu-22-04"');
     expect(linux).toContain("#e95420");
   });
@@ -69,5 +69,51 @@ describe("CML node-definition icons", () => {
 
     expect(hidden).toBe("");
     expect(fallback).toContain('title="custom-cml-node"');
+  });
+});
+
+describe("vendor-neutral connection icons", () => {
+  it("offers network, hardware, infrastructure, and OS choices", () => {
+    const values = new Set(DEVICE_TYPE_OPTIONS.map((option) => option.value));
+    for (const value of [
+      "network_router",
+      "network_l3_switch",
+      "network_switch",
+      "network_firewall",
+      "network_wireless",
+      "network_load_balancer",
+      "hardware_server",
+      "hardware_workstation",
+      "infrastructure_cloud",
+      "infrastructure_container",
+      "infrastructure_database",
+      "infrastructure_storage",
+      "windows_desktop",
+      "windows_server",
+      "macos",
+      "linux_generic",
+      "bsd",
+      "solaris",
+    ]) {
+      expect(values.has(value), value).toBe(true);
+    }
+  });
+
+  it("auto-detects representative multi-vendor and infrastructure descriptors", () => {
+    const cases = [
+      ["veos", "network_l3_switch"],
+      ["vyos-router", "network_router"],
+      ["pfsense-firewall", "network_firewall"],
+      ["wireless-access-point", "network_wireless"],
+      ["haproxy-load-balancer", "network_load_balancer"],
+      ["kubernetes-pod", "container"],
+      ["postgresql-database", "database"],
+      ["nas-storage", "storage"],
+    ];
+
+    for (const [descriptor, kind] of cases) {
+      const icon = renderToStaticMarkup(<GuestOsIcon deviceType={descriptor} />);
+      expect(icon).toContain(`data-icon-kind="${kind}"`);
+    }
   });
 });
