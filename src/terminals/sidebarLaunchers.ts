@@ -6,6 +6,10 @@ import {
   type SavedSession,
 } from "../api/sessions";
 import { getSshKeyPath } from "../api/standalone";
+import {
+  hasOnePasswordCredential,
+  resolveOnePasswordLogin,
+} from "../api/onePassword";
 import { pushSshDestPlain, pushSshDestWithVimFix } from "../api/sshVimFix";
 import { useAppearance } from "../appearance/AppearanceContext";
 import { useConsoles } from "../consoles/useConsoles";
@@ -52,13 +56,20 @@ export function useSidebarLaunchers(onError?: (message: string) => void): Sideba
           ...extras(session, session.name),
         });
       } else {
-        const user = userOverride ?? session.username ?? "";
+        const usesOnePassword = hasOnePasswordCredential(session);
+        const credential = usesOnePassword
+          ? await resolveOnePasswordLogin(session.onePassword!)
+          : null;
+        const user = credential?.username ?? userOverride ?? session.username ?? "";
         const args = ["-o", "StrictHostKeyChecking=accept-new", "-p", String(session.port || 22)];
+        if (credential) {
+          args.push("-o", "PubkeyAuthentication=no", "-o", "PreferredAuthentications=password,keyboard-interactive");
+        }
         if (session.keepalive && session.keepalive > 0) {
           args.push("-o", `ServerAliveInterval=${Math.floor(session.keepalive)}`, "-o", "ServerAliveCountMax=3");
         }
         const key = session.sshKeyPath?.trim() || getSshKeyPath();
-        if (key) args.push("-i", key);
+        if (key && !credential) args.push("-i", key);
         args.push(...sessionSshForwardArgs(session));
         const destination = `${user}${user ? "@" : ""}${session.host}`;
         if (session.vimFix) pushSshDestWithVimFix(args, destination);
@@ -71,6 +82,9 @@ export function useSidebarLaunchers(onError?: (message: string) => void): Sideba
           tintAnsi: session.tintAnsi,
           group,
           rowKey: `s:${session.id}`,
+          autoPassword: credential?.password,
+          authenticationLabel: usesOnePassword ? "1Password" : undefined,
+          passwordCredential: usesOnePassword ? session.onePassword : undefined,
           ...extras(session, session.name),
         });
       }
@@ -81,12 +95,27 @@ export function useSidebarLaunchers(onError?: (message: string) => void): Sideba
 
   const launchSessionSftpInApp = useCallback(async (session: SavedSession, group?: string) => {
     try {
-      const user = session.username || "";
+      const usesOnePassword = hasOnePasswordCredential(session);
+      const credential = usesOnePassword
+        ? await resolveOnePasswordLogin(session.onePassword!)
+        : null;
+      const user = credential?.username ?? session.username ?? "";
       const args = ["-o", "StrictHostKeyChecking=accept-new", "-P", String(session.port || 22)];
       const key = session.sshKeyPath?.trim() || getSshKeyPath();
-      if (key) args.push("-i", key);
+      if (credential) {
+        args.push("-o", "PubkeyAuthentication=no", "-o", "PreferredAuthentications=password,keyboard-interactive");
+      } else if (key) args.push("-i", key);
       args.push(`${user}${user ? "@" : ""}${session.host}`);
-      await open({ title: `${session.name} (sftp)`, cmd: "sftp", args, group, ...extras(session, session.name) });
+      await open({
+        title: `${session.name} (sftp)`,
+        cmd: "sftp",
+        args,
+        group,
+        autoPassword: credential?.password,
+        authenticationLabel: usesOnePassword ? "1Password" : undefined,
+        passwordCredential: usesOnePassword ? session.onePassword : undefined,
+        ...extras(session, session.name),
+      });
       touchSession(session.id);
       navigate("/sessions");
     } catch (error) { report(error); }

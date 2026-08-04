@@ -104,8 +104,8 @@ export interface SavedSession {
   deletedAt?: number;
   /// Group id this session belongs to. Undefined / unknown = "Ungrouped".
   groupId?: string;
-  /// Per-group display order (ascending). Sessions without `order` sort
-  /// to the end of their bucket by `lastUsedAt` as a fallback.
+  /// Per-group display order (ascending). Sessions without `order` retain
+  /// their creation order; opening a connection must not move its card.
   order?: number;
   /// Optional accent color (hex). Tints the session card stripe and the
   /// terminal tab when launching from this session.
@@ -373,6 +373,14 @@ export function touchSession(id: string) {
   }
 }
 
+/** Stable card order: explicit drag order first, then original creation time. */
+export function compareSessionsForDisplay(a: SavedSession, b: SavedSession): number {
+  const ao = a.order ?? Number.POSITIVE_INFINITY;
+  const bo = b.order ?? Number.POSITIVE_INFINITY;
+  if (ao !== bo) return ao - bo;
+  return a.createdAt - b.createdAt;
+}
+
 export function newId(): string {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 }
@@ -501,7 +509,7 @@ export function assignSessionToGroup(sessionId: string, groupId: string | undefi
 ///
 /// `visibleOrder`, when supplied, is the list of session ids in the
 /// bucket as the user currently sees them. Pass it from the UI when the
-/// rendered order differs from the persisted `(order, lastUsedAt)` sort
+/// rendered order differs from the persisted order/creation-time sort
 /// — for example when pinned sessions float to the top. Without it the
 /// function falls back to the persisted sort, which would mis-detect
 /// direction whenever the visible order has been re-shuffled.
@@ -537,12 +545,7 @@ export function reorderSession(
   } else {
     const peersFull = all
       .filter((x) => !x.deletedAt && x.groupId === targetGroup)
-      .sort((a, b) => {
-        const ao = a.order ?? Number.POSITIVE_INFINITY;
-        const bo = b.order ?? Number.POSITIVE_INFINITY;
-        if (ao !== bo) return ao - bo;
-        return (b.lastUsedAt ?? 0) - (a.lastUsedAt ?? 0);
-      });
+      .sort(compareSessionsForDisplay);
     fullIds = peersFull.map((p) => p.id);
   }
   const dragIdx = fullIds.indexOf(sessionId);

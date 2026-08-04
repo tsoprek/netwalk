@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+  compareSessionsForDisplay,
   effectiveSessionConnections,
   effectiveSessionRdpPort,
   listGroups,
@@ -31,6 +32,29 @@ describe("saved Connection groups", () => {
 
     upsertGroup({ ...listGroups()[0], color: undefined });
     expect(listGroups()[0].color).toBeUndefined();
+  });
+
+  it("keeps connection cards stable when their last-used time changes", () => {
+    const older = {
+      id: "older",
+      name: "Older",
+      protocol: "ssh" as const,
+      host: "older.example.test",
+      port: 22,
+      username: "admin",
+      createdAt: 1,
+      lastUsedAt: 500,
+    };
+    const newer = {
+      ...older,
+      id: "newer",
+      name: "Newer",
+      createdAt: 2,
+      lastUsedAt: 100,
+    };
+
+    expect([newer, older].sort(compareSessionsForDisplay).map((session) => session.id))
+      .toEqual(["older", "newer"]);
   });
 });
 

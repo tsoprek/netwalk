@@ -30,6 +30,7 @@ import Notebooks from "./pages/Notebooks";
 import Identities from "./pages/Identities";
 import Settings from "./pages/Settings";
 import SftpBrowser from "./pages/SftpBrowser";
+import SessionWindow from "./pages/SessionWindow";
 import { installNativeAppMenu } from "./nativeAppMenu";
 
 const NAVIGATION: Array<{ path: string; label: string; icon: StandaloneTopbarIconName }> = [
@@ -324,9 +325,15 @@ function Shell() {
 }
 
 function AppSurface() {
+  const location = useLocation();
   useEffect(() => installEditableControlCharacterGuard(), []);
   useEffect(() => installEscapeDialogDismiss(), []);
-  return <Shell />;
+  // A window's role is immutable for its lifetime. Child session windows must
+  // mount the adoption surface instead of briefly rendering the full app shell.
+  const [isSessionWindow] = useState(
+    () => new URLSearchParams(location.search).get("catwalkSessionWindow") === "1",
+  );
+  return isSessionWindow ? <SessionWindow /> : <Shell />;
 }
 
 export default function App() {

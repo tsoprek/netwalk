@@ -1584,27 +1584,28 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
       );
       const tab = focusedTab ?? tabsRef.current.find((t) => t.id === activeIdRef.current);
       if (isPassword) {
-        const credential = focusedTab?.spawnOpts.passwordCredential;
-        if (!focusedTab || focusedTab.exited || !credential) return;
+        const passwordTab = tab;
+        const credential = passwordTab?.spawnOpts.passwordCredential;
+        if (!passwordTab || passwordTab.exited || !credential) return;
         ev.preventDefault();
         ev.stopPropagation();
-        if (!tabHasActivePasswordPrompt(focusedTab, passwordPromptTailsRef.current.get(focusedTab.id) ?? "")) {
-          emitPasswordShortcutStatus(focusedTab.id, "blocked", "No active password prompt. Nothing was sent.");
+        if (!tabHasActivePasswordPrompt(passwordTab, passwordPromptTailsRef.current.get(passwordTab.id) ?? "")) {
+          emitPasswordShortcutStatus(passwordTab.id, "blocked", "No active password prompt. Nothing was sent.");
           return;
         }
         if (passwordRequestRef.current != null) {
-          emitPasswordShortcutStatus(focusedTab.id, "blocked", "Credential retrieval is already in progress.");
+          emitPasswordShortcutStatus(passwordTab.id, "blocked", "Credential retrieval is already in progress.");
           return;
         }
-        passwordRequestRef.current = focusedTab.id;
-        emitPasswordShortcutStatus(focusedTab.id, "retrieving", "Retrieving configured credentials…");
+        passwordRequestRef.current = passwordTab.id;
+        emitPasswordShortcutStatus(passwordTab.id, "retrieving", "Retrieving configured credentials…");
         diagnosticEvent("ssh_tunnel", "debug", "catwalk.terminal-auth", "On-demand password retrieval started", {
-          pty_id: focusedTab.ptyId,
-          authentication_source: focusedTab.spawnOpts.authenticationLabel || "configured credential",
+          pty_id: passwordTab.ptyId,
+          authentication_source: passwordTab.spawnOpts.authenticationLabel || "configured credential",
         });
         void resolveOnePasswordLogin(credential)
           .then(({ password }) => {
-            const current = tabsRef.current.find((candidate) => candidate.id === focusedTab.id);
+            const current = tabsRef.current.find((candidate) => candidate.id === passwordTab.id);
             if (!password || !current || current.exited) return;
             if (!tabHasActivePasswordPrompt(current, passwordPromptTailsRef.current.get(current.id) ?? "")) {
               emitPasswordShortcutStatus(current.id, "blocked", "Password prompt is no longer active. Nothing was sent.");
@@ -1626,7 +1627,7 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
           .catch((error) => {
             const message = error instanceof Error ? error.message : String(error);
             diagnosticEvent("ssh_tunnel", "error", "catwalk.terminal-auth", "On-demand password submission failed", {
-              pty_id: focusedTab.ptyId,
+              pty_id: passwordTab.ptyId,
               error: message,
             });
             addLocalNotification({
@@ -1634,10 +1635,10 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
               title: "Password retrieval failed",
               body: message || "The configured session password could not be retrieved.",
             });
-            emitPasswordShortcutStatus(focusedTab.id, "error", "Password retrieval failed.");
+            emitPasswordShortcutStatus(passwordTab.id, "error", "Password retrieval failed.");
           })
           .finally(() => {
-            if (passwordRequestRef.current === focusedTab.id) passwordRequestRef.current = null;
+            if (passwordRequestRef.current === passwordTab.id) passwordRequestRef.current = null;
           });
         return;
       }

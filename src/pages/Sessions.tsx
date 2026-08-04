@@ -22,6 +22,7 @@ import {
   SessionGroup,
   SessionProtocol,
   assignSessionToGroup,
+  compareSessionsForDisplay,
   deleteGroup,
   deleteSession,
   effectiveSessionConnections,
@@ -1109,16 +1110,14 @@ export default function Sessions() {
       const key = s.groupId && map.has(s.groupId) ? s.groupId : UNGROUPED;
       map.get(key)!.push(s);
     }
-    // Sort each bucket by pin → explicit `order` (drag-drop) → most-recently-used.
+    // Sort each bucket by pin → explicit drag order → creation order. Usage is
+    // tracked for history only and must not rearrange the Connections screen.
     for (const arr of map.values()) {
       arr.sort((a, b) => {
         const pa = pins.has(a.id) ? 0 : 1;
         const pb = pins.has(b.id) ? 0 : 1;
         if (pa !== pb) return pa - pb;
-        const ao = a.order ?? Number.POSITIVE_INFINITY;
-        const bo = b.order ?? Number.POSITIVE_INFINITY;
-        if (ao !== bo) return ao - bo;
-        return (b.lastUsedAt ?? 0) - (a.lastUsedAt ?? 0);
+        return compareSessionsForDisplay(a, b);
       });
     }
     return map;
@@ -1772,7 +1771,7 @@ export default function Sessions() {
         onReorder={(draggedId, targetId) => {
           // Hand the focus grid's visible order to reorderSession so
           // L->R vs R->L is decided from what the user sees, not from
-          // the persisted (order, lastUsedAt) sort.
+          // the persisted order/creation-time sort.
           reorderSession(draggedId, targetId, items.map((s) => s.id));
           reload();
           void pushProfile();
