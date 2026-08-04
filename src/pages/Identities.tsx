@@ -146,14 +146,14 @@ export default function Identities() {
       <div className="identities-page-heading">
         <div>
           <h1 className="page-view-title">Identities</h1>
-          <p>Usernames ConneCat uses when connecting to devices. Passwords are never stored in ConneCat.</p>
+          <p>Usernames ConnCat uses when connecting to devices. Passwords are never stored in ConnCat.</p>
         </div>
       </div>
 
       <div className="identities-access-grid">
         <section className="identities-access-card identities-auth-card">
           <h2>Authentication</h2>
-          <p>ConneCat uses your SSH agent, configured keys, and native connection clients. Credentials remain on this computer.</p>
+          <p>ConnCat uses your SSH agent, configured keys, and native connection clients. Credentials remain on this computer.</p>
         </section>
         <section className="identities-access-card identities-ssh-key-card">
           <h2>SSH Private Key</h2>
@@ -182,7 +182,7 @@ export default function Identities() {
 
       <section className="identities-collection-card">
         <div className="identities-collection-heading">
-          <div><h2>Users</h2><p>Connection usernames available to ConneCat.</p></div>
+          <div><h2>Users</h2><p>Connection usernames available to ConnCat.</p></div>
           {!adding && <button type="button" onClick={startAdd}><NotesIcon name="add" size={15} /> Add identity</button>}
         </div>
 

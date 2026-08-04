@@ -150,7 +150,7 @@ impl LegacyExitDiagnostics {
         } else {
             (
                 "network_failed",
-                "ConneCat FreeRDP could not complete the RDP connection.",
+                "ConnCat FreeRDP could not complete the RDP connection.",
             )
         };
         (code, summary.to_string())
@@ -208,7 +208,7 @@ fn is_freerdp_connected_line(line: &str) -> bool {
         // FreeRDP emits this server status after a successful automatic
         // reconnect. The desktop can already be usable without repeating the
         // initial GDI/RDPDR log lines, so this is the authoritative signal for
-        // clearing ConneCat's reconnect notice.
+        // clearing ConnCat's reconnect notice.
         || line.contains("AutoReconnectStatus: 0x00000000")
 }
 
@@ -248,7 +248,7 @@ fn viewer_negotiation_failure(
     if line.contains("FailureCode(1)") {
         return Some((
             "security_protocol_unsupported",
-            "The RDP server requires Enhanced RDP Security with TLS. ConneCat will retry using TLS.",
+            "The RDP server requires Enhanced RDP Security with TLS. ConnCat will retry using TLS.",
         ));
     }
     if line.contains("FailureCode(2)") {
@@ -345,7 +345,7 @@ enum ParentCommand<'a> {
 impl DirectRdpState {
     pub fn new(app_data_dir: PathBuf) -> Result<Self, String> {
         fs::create_dir_all(&app_data_dir)
-            .map_err(|error| format!("create ConneCat app data directory: {error}"))?;
+            .map_err(|error| format!("create ConnCat app data directory: {error}"))?;
         Ok(Self {
             inner: Arc::new(DirectRdpInner {
                 sessions: Mutex::new(HashMap::new()),
@@ -477,10 +477,10 @@ fn viewer_path() -> Result<PathBuf, String> {
         ));
     }
     let executable =
-        std::env::current_exe().map_err(|error| format!("locate ConneCat executable: {error}"))?;
+        std::env::current_exe().map_err(|error| format!("locate ConnCat executable: {error}"))?;
     let directory = executable
         .parent()
-        .ok_or_else(|| "ConneCat executable has no parent directory".to_string())?;
+        .ok_or_else(|| "ConnCat executable has no parent directory".to_string())?;
     let candidates = [
         directory.join("catwalk-rdp-viewer"),
         directory.join("catwalk-rdp-viewer.exe"),
@@ -488,7 +488,7 @@ fn viewer_path() -> Result<PathBuf, String> {
         directory.join("catwalk-rdp-viewer-x86_64-apple-darwin"),
         directory.join("catwalk-rdp-viewer-x86_64-pc-windows-msvc.exe"),
     ];
-    candidates.into_iter().find(|path| path.is_file()).ok_or_else(|| "ConneCat RDP viewer is not installed. Reinstall or update ConneCat, or select System RDP client in this Connection.".to_string())
+    candidates.into_iter().find(|path| path.is_file()).ok_or_else(|| "ConnCat RDP viewer is not installed. Reinstall or update ConnCat, or select System RDP client in this Connection.".to_string())
 }
 
 fn viewer_command(path: &Path) -> Command {
@@ -503,15 +503,15 @@ fn viewer_command(path: &Path) -> Command {
 fn show_certificate_prompt_window(app: &AppHandle) {
     let Some(window) = app.get_webview_window("main") else {
         tracing::warn!(
-            target: "catwalk_client::direct_rdp",
-            "Could not find the main ConneCat window for the RDP certificate prompt"
+            target: "conncat_client::direct_rdp",
+            "Could not find the main ConnCat window for the RDP certificate prompt"
         );
         return;
     };
     let _ = window.show();
     let _ = window.unminimize();
     // The separate native viewer is normally the foreground window. Keeping
-    // ConneCat temporarily above it makes the trust decision impossible to
+    // ConnCat temporarily above it makes the trust decision impossible to
     // miss; the certificate command removes this flag immediately.
     let _ = window.set_always_on_top(true);
     let _ = window.set_focus();
@@ -603,10 +603,10 @@ fn freerdp_path() -> Result<PathBuf, String> {
         ));
     }
     #[cfg(target_os = "windows")]
-    return Err("ConneCat FreeRDP was not found. Windows development and release builds include it automatically; set CATWALK_FREERDP_PATH only to test a custom patched wfreerdp.exe. IronRDP remains available as the bundled ConneCat client.".into());
+    return Err("ConnCat FreeRDP was not found. Windows development and release builds include it automatically; set CATWALK_FREERDP_PATH only to test a custom patched wfreerdp.exe. IronRDP remains available as the bundled ConnCat client.".into());
 
     #[cfg(not(target_os = "windows"))]
-    Err("ConneCat FreeRDP is not installed. Install FreeRDP (brew install freerdp), then try again or open this Connection with the system RDP client.".into())
+    Err("ConnCat FreeRDP is not installed. Install FreeRDP (brew install freerdp), then try again or open this Connection with the system RDP client.".into())
 }
 
 fn freerdp_prefers_dark_chrome(theme: Option<&RdpWindowTheme>) -> bool {
@@ -663,18 +663,18 @@ fn branded_macos_freerdp_path(app: &AppHandle, executable: &Path) -> Result<Path
     let contents = app
         .path()
         .app_cache_dir()
-        .map_err(|error| format!("resolve ConneCat FreeRDP cache directory: {error}"))?
+        .map_err(|error| format!("resolve ConnCat FreeRDP cache directory: {error}"))?
         .join("freerdp-launchers")
         .join(edition)
-        .join("ConneCat FreeRDP.app")
+        .join("ConnCat FreeRDP.app")
         .join("Contents");
     let macos = contents.join("MacOS");
     let resources = contents.join("Resources");
     fs::create_dir_all(&macos)
         .and_then(|()| fs::create_dir_all(&resources))
-        .map_err(|error| format!("create branded ConneCat FreeRDP bundle: {error}"))?;
-    fs::write(resources.join("ConneCatFreeRDP.icns"), icon)
-        .map_err(|error| format!("write branded ConneCat FreeRDP icon: {error}"))?;
+        .map_err(|error| format!("create branded ConnCat FreeRDP bundle: {error}"))?;
+    fs::write(resources.join("ConnCatFreeRDP.icns"), icon)
+        .map_err(|error| format!("write branded ConnCat FreeRDP icon: {error}"))?;
     fs::write(
         contents.join("Info.plist"),
         format!(
@@ -683,12 +683,12 @@ fn branded_macos_freerdp_path(app: &AppHandle, executable: &Path) -> Result<Path
 <plist version="1.0">
 <dict>
   <key>CFBundleDevelopmentRegion</key><string>en</string>
-  <key>CFBundleDisplayName</key><string>ConneCat FreeRDP</string>
-  <key>CFBundleExecutable</key><string>ConneCatFreeRDP</string>
-  <key>CFBundleIconFile</key><string>ConneCatFreeRDP.icns</string>
+  <key>CFBundleDisplayName</key><string>ConnCat FreeRDP</string>
+  <key>CFBundleExecutable</key><string>ConnCatFreeRDP</string>
+  <key>CFBundleIconFile</key><string>ConnCatFreeRDP.icns</string>
   <key>CFBundleIdentifier</key><string>{bundle_identifier}</string>
   <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
-  <key>CFBundleName</key><string>ConneCat FreeRDP</string>
+  <key>CFBundleName</key><string>ConnCat FreeRDP</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleVersion</key><string>2</string>
   <key>NSHighResolutionCapable</key><true/>
@@ -697,20 +697,20 @@ fn branded_macos_freerdp_path(app: &AppHandle, executable: &Path) -> Result<Path
 "#
         ),
     )
-    .map_err(|error| format!("write branded ConneCat FreeRDP bundle metadata: {error}"))?;
+    .map_err(|error| format!("write branded ConnCat FreeRDP bundle metadata: {error}"))?;
 
-    let launcher = macos.join("ConneCatFreeRDP");
+    let launcher = macos.join("ConnCatFreeRDP");
     if fs::symlink_metadata(&launcher).is_ok() {
         fs::remove_file(&launcher)
-            .map_err(|error| format!("refresh branded ConneCat FreeRDP launcher: {error}"))?;
+            .map_err(|error| format!("refresh branded ConnCat FreeRDP launcher: {error}"))?;
     }
     let executable = executable
         .canonicalize()
         .map_err(|error| format!("resolve FreeRDP executable: {error}"))?;
     symlink(&executable, &launcher)
-        .map_err(|error| format!("link branded ConneCat FreeRDP launcher: {error}"))?;
+        .map_err(|error| format!("link branded ConnCat FreeRDP launcher: {error}"))?;
     tracing::debug!(
-        target: "catwalk_client::direct_rdp",
+        target: "conncat_client::direct_rdp",
         edition,
         source = %executable.display(),
         launcher = %launcher.display(),
@@ -756,17 +756,17 @@ fn install_windows_freerdp_window(
     let icon_path = app
         .path()
         .app_cache_dir()
-        .map_err(|error| format!("resolve ConneCat FreeRDP cache directory: {error}"))?
+        .map_err(|error| format!("resolve ConnCat FreeRDP cache directory: {error}"))?
         .join("freerdp-launchers")
         .join(edition)
-        .join("ConneCatFreeRDP.ico");
+        .join("ConnCatFreeRDP.ico");
     let parent = icon_path
         .parent()
-        .ok_or_else(|| "resolve branded ConneCat FreeRDP icon directory".to_string())?;
+        .ok_or_else(|| "resolve branded ConnCat FreeRDP icon directory".to_string())?;
     fs::create_dir_all(parent)
-        .map_err(|error| format!("create branded ConneCat FreeRDP icon directory: {error}"))?;
+        .map_err(|error| format!("create branded ConnCat FreeRDP icon directory: {error}"))?;
     fs::write(&icon_path, icon)
-        .map_err(|error| format!("write branded ConneCat FreeRDP icon: {error}"))?;
+        .map_err(|error| format!("write branded ConnCat FreeRDP icon: {error}"))?;
 
     let path = icon_path
         .as_os_str()
@@ -785,7 +785,7 @@ fn install_windows_freerdp_window(
         )
     } as HICON;
     if icon.is_null() {
-        return Err("load branded ConneCat FreeRDP Windows icon".into());
+        return Err("load branded ConnCat FreeRDP Windows icon".into());
     }
 
     struct WindowIconContext {
@@ -827,7 +827,7 @@ fn install_windows_freerdp_window(
         unsafe { GetWindowThreadProcessId(hwnd, &mut window_process_id) };
         if window_process_id == context.process_id {
             // SAFETY: WM_SETICON accepts an HICON in LPARAM. The icon remains
-            // loaded for the ConneCat process lifetime after this handoff.
+            // loaded for the ConnCat process lifetime after this handoff.
             unsafe {
                 SendMessageW(hwnd, WM_SETICON, ICON_BIG as WPARAM, context.icon as LPARAM);
                 SendMessageW(
@@ -844,7 +844,7 @@ fn install_windows_freerdp_window(
                 (DWMWA_TEXT_COLOR, context.text),
             ] {
                 // Unsupported Windows versions retain their normal system
-                // title bar while newer versions adopt the ConneCat chrome.
+                // title bar while newer versions adopt the ConnCat chrome.
                 unsafe {
                     DwmSetWindowAttribute(
                         hwnd,
@@ -890,14 +890,14 @@ fn install_windows_freerdp_window(
         }
         if found_any {
             tracing::debug!(
-                target: "catwalk_client::direct_rdp",
+                target: "conncat_client::direct_rdp",
                 process_id,
                 edition,
-                "Installed branded Windows FreeRDP window icon and ConneCat title-bar theme"
+                "Installed branded Windows FreeRDP window icon and ConnCat title-bar theme"
             );
         } else {
             tracing::warn!(
-                target: "catwalk_client::direct_rdp",
+                target: "conncat_client::direct_rdp",
                 process_id,
                 edition,
                 "FreeRDP window did not appear in time for branded icon handoff"
@@ -918,7 +918,7 @@ fn freerdp_args(request: &LaunchRequest) -> Vec<String> {
     let mut args = vec![
         format!("/v:{target}"),
         format!("/u:{}", request.username),
-        format!("/t:ConneCat RDP — {}", request.title),
+        format!("/t:ConnCat RDP — {}", request.title),
         format!("/size:{width}x{height}"),
         "/from-stdin:force".into(),
         security.into(),
@@ -1036,13 +1036,13 @@ fn freerdp_command(path: &Path, request: &LaunchRequest) -> Command {
         // window when the outer RDP session receives a burst of changed pixels
         // (for example, opening or moving a remote application). The software
         // renderer keeps presentation on the SDL window thread and is fast
-        // enough for ConneCat's bounded 1100x700 nested desktop.
+        // enough for ConnCat's bounded 1100x700 nested desktop.
         command
             .env("SDL_WINDOWS_RAW_KEYBOARD", "0")
             .env("SDL_WINDOWS_ENABLE_MESSAGELOOP", "1")
             .env("SDL_RENDER_DRIVER", "software");
 
-        // Never let a FreeRDP sidecar own ConneCat's development console.
+        // Never let a FreeRDP sidecar own ConnCat's development console.
         // Console-mode FreeRDP builds may hide/detach their inherited console
         // when stdin is a credential pipe, which otherwise makes the
         // PowerShell running `tauri dev` disappear.
@@ -1099,7 +1099,7 @@ pub fn launch(
     mut request: LaunchRequest,
 ) -> Result<String, String> {
     #[cfg(not(any(target_os = "macos", target_os = "windows")))]
-    return Err("ConneCat RDP is currently available on macOS and Windows only; select the System RDP client for this Connection.".into());
+    return Err("ConnCat RDP is currently available on macOS and Windows only; select the System RDP client for this Connection.".into());
 
     #[cfg(any(target_os = "macos", target_os = "windows"))]
     {
@@ -1109,7 +1109,7 @@ pub fn launch(
         let reservation =
             DestinationReservation::new(&state, destination.clone(), session_id.clone())?;
         tracing::info!(
-            target: "catwalk_client::direct_rdp",
+            target: "conncat_client::direct_rdp",
             session_id = %session_id,
             connection_id = %request.connection_id,
             host = %request.host,
@@ -1118,16 +1118,16 @@ pub fn launch(
         );
         let viewer = viewer_path()?;
         tracing::info!(
-            target: "catwalk_client::direct_rdp",
+            target: "conncat_client::direct_rdp",
             session_id = %session_id,
             viewer = %viewer.display(),
             "Direct RDP viewer resolved"
         );
         let mut child = viewer_command(&viewer)
             .spawn()
-            .map_err(|error| format!("start ConneCat RDP viewer: {error}"))?;
+            .map_err(|error| format!("start ConnCat RDP viewer: {error}"))?;
         tracing::info!(
-            target: "catwalk_client::direct_rdp",
+            target: "conncat_client::direct_rdp",
             session_id = %session_id,
             pid = child.id(),
             "Direct RDP viewer started"
@@ -1135,7 +1135,7 @@ pub fn launch(
         let mut stdin = child
             .stdin
             .take()
-            .ok_or_else(|| "ConneCat RDP viewer has no input pipe".to_string())?;
+            .ok_or_else(|| "ConnCat RDP viewer has no input pipe".to_string())?;
         serde_json::to_writer(&mut stdin, &request)
             .map_err(|error| format!("encode RDP launch: {error}"))?;
         stdin
@@ -1150,7 +1150,7 @@ pub fn launch(
         let stdout = child
             .stdout
             .take()
-            .ok_or_else(|| "ConneCat RDP viewer has no event pipe".to_string())?;
+            .ok_or_else(|| "ConnCat RDP viewer has no event pipe".to_string())?;
         let stderr = child.stderr.take();
         let stdin = Arc::new(Mutex::new(stdin));
         let child = Arc::new(Mutex::new(child));
@@ -1177,7 +1177,7 @@ pub fn launch(
             for line in BufReader::new(stdout).lines().map_while(Result::ok) {
                 let Ok(mut event) = serde_json::from_str::<serde_json::Value>(&line) else {
                     tracing::warn!(
-                        target: "catwalk_client::direct_rdp",
+                        target: "conncat_client::direct_rdp",
                         session_id = %event_session_id,
                         "Ignored malformed RDP viewer event"
                     );
@@ -1187,14 +1187,14 @@ pub fn launch(
                     && event_failure_reported.swap(true, Ordering::AcqRel)
                 {
                     tracing::debug!(
-                        target: "catwalk_client::direct_rdp",
+                        target: "conncat_client::direct_rdp",
                         session_id = %event_session_id,
                         "Ignored duplicate RDP viewer failure"
                     );
                     continue;
                 }
                 tracing::debug!(
-                    target: "catwalk_client::direct_rdp",
+                    target: "conncat_client::direct_rdp",
                     session_id = %event_session_id,
                     event_type = event.get("type").and_then(serde_json::Value::as_str).unwrap_or("unknown"),
                     state = event.get("state").and_then(serde_json::Value::as_str).unwrap_or(""),
@@ -1240,7 +1240,7 @@ pub fn launch(
                 }
                 let _ = event_app.emit(EVENT_NAME, event);
             }
-            // A viewer may exit while ConneCat is showing its certificate
+            // A viewer may exit while ConnCat is showing its certificate
             // challenge. Never leave the main window pinned above every other
             // application after that session is gone.
             release_certificate_prompt_window(&event_app);
@@ -1267,9 +1267,9 @@ pub fn launch(
             std::thread::spawn(move || {
                 for line in BufReader::new(stderr).lines().map_while(Result::ok) {
                     if is_verbose_ironrdp_diagnostic(&line) {
-                        tracing::debug!(target: "catwalk_client::direct_rdp", session_id = %stderr_session_id, message = %line, "RDP viewer diagnostic");
+                        tracing::debug!(target: "conncat_client::direct_rdp", session_id = %stderr_session_id, message = %line, "RDP viewer diagnostic");
                     } else {
-                        tracing::warn!(target: "catwalk_client::direct_rdp", session_id = %stderr_session_id, message = %line, "RDP viewer diagnostic");
+                        tracing::warn!(target: "conncat_client::direct_rdp", session_id = %stderr_session_id, message = %line, "RDP viewer diagnostic");
                     }
                     if let Some((code, message)) =
                         viewer_negotiation_failure(&line, stderr_security_mode)
@@ -1301,13 +1301,13 @@ pub fn launch(
                 .is_some_and(std::process::ExitStatus::success)
             {
                 tracing::info!(
-                    target: "catwalk_client::direct_rdp",
+                    target: "conncat_client::direct_rdp",
                     session_id = %wait_session_id,
                     "Direct RDP viewer exited"
                 );
             } else {
                 tracing::warn!(
-                    target: "catwalk_client::direct_rdp",
+                    target: "conncat_client::direct_rdp",
                     session_id = %wait_session_id,
                     exit_code = ?status.as_ref().and_then(|value| value.code()),
                     "Direct RDP viewer exited unsuccessfully"
@@ -1334,7 +1334,7 @@ pub fn launch_legacy(
     mut request: LaunchRequest,
 ) -> Result<String, String> {
     #[cfg(not(any(target_os = "macos", target_os = "windows")))]
-    return Err("ConneCat FreeRDP is currently available on macOS and Windows only; select the System RDP client for this Connection.".into());
+    return Err("ConnCat FreeRDP is currently available on macOS and Windows only; select the System RDP client for this Connection.".into());
 
     #[cfg(any(target_os = "macos", target_os = "windows"))]
     {
@@ -1351,7 +1351,7 @@ pub fn launch_legacy(
         #[cfg(not(target_os = "macos"))]
         let sizing = "dynamic";
         tracing::info!(
-            target: "catwalk_client::direct_rdp",
+            target: "conncat_client::direct_rdp",
             session_id = %session_id,
             connection_id = %request.connection_id,
             host = %request.host,
@@ -1368,12 +1368,12 @@ pub fn launch_legacy(
         let started_at = Instant::now();
         let mut child = freerdp_command(&freerdp, &request)
             .spawn()
-            .map_err(|error| format!("start ConneCat FreeRDP: {error}"))?;
+            .map_err(|error| format!("start ConnCat FreeRDP: {error}"))?;
         #[cfg(target_os = "windows")]
         if let Err(error) = install_windows_freerdp_window(&app, child.id(), request.theme.as_ref())
         {
             tracing::warn!(
-                target: "catwalk_client::direct_rdp",
+                target: "conncat_client::direct_rdp",
                 session_id = %session_id,
                 %error,
                 "Could not install the branded Windows FreeRDP icon"
@@ -1382,12 +1382,12 @@ pub fn launch_legacy(
         let mut stdin = child
             .stdin
             .take()
-            .ok_or_else(|| "ConneCat FreeRDP has no credential input pipe".to_string())?;
+            .ok_or_else(|| "ConnCat FreeRDP has no credential input pipe".to_string())?;
         stdin
             .write_all(request.password.as_bytes())
             .and_then(|_| stdin.write_all(b"\n"))
             .and_then(|_| stdin.flush())
-            .map_err(|error| format!("send credentials to ConneCat FreeRDP: {error}"))?;
+            .map_err(|error| format!("send credentials to ConnCat FreeRDP: {error}"))?;
         drop(stdin);
         request.username.zeroize();
         request.domain.zeroize();
@@ -1416,7 +1416,7 @@ pub fn launch_legacy(
                 "type": "state",
                 "sessionId": session_id,
                 "state": "connecting",
-                "message": "ConneCat FreeRDP is connecting…"
+                "message": "ConnCat FreeRDP is connecting…"
             }),
         );
 
@@ -1438,7 +1438,7 @@ pub fn launch_legacy(
                                 "type": "state",
                                 "sessionId": log_session_id,
                                 "state": "connected",
-                                "message": "ConneCat FreeRDP connected"
+                                "message": "ConnCat FreeRDP connected"
                             }),
                         );
                     } else if is_freerdp_reconnecting_line(&line)
@@ -1457,7 +1457,7 @@ pub fn launch_legacy(
                         );
                     }
                     if !is_high_frequency_freerdp_event_trace(&line) {
-                        tracing::debug!(target: "catwalk_client::direct_rdp", session_id = %log_session_id, message = %line, "FreeRDP diagnostic");
+                        tracing::debug!(target: "conncat_client::direct_rdp", session_id = %log_session_id, message = %line, "FreeRDP diagnostic");
                     }
                 }
             });
@@ -1481,7 +1481,7 @@ pub fn launch_legacy(
                                 "type": "state",
                                 "sessionId": log_session_id,
                                 "state": "connected",
-                                "message": "ConneCat FreeRDP connected"
+                                "message": "ConnCat FreeRDP connected"
                             }),
                         );
                     } else if should_emit_freerdp_reconnecting(&line, diagnostics.user_closed)
@@ -1500,7 +1500,7 @@ pub fn launch_legacy(
                         );
                     }
                     if !is_high_frequency_freerdp_event_trace(&line) {
-                        tracing::warn!(target: "catwalk_client::direct_rdp", session_id = %log_session_id, message = %line, "FreeRDP diagnostic");
+                        tracing::warn!(target: "conncat_client::direct_rdp", session_id = %log_session_id, message = %line, "FreeRDP diagnostic");
                     }
                 }
                 diagnostics
@@ -1539,16 +1539,16 @@ pub fn launch_legacy(
             );
             if success {
                 tracing::info!(
-                    target: "catwalk_client::direct_rdp",
+                    target: "conncat_client::direct_rdp",
                     session_id = %wait_session_id,
                     exit_code = ?status.as_ref().and_then(|value| value.code()),
                     requested_disconnect,
                     remote_close = diagnostics.expected_remote_close,
                     elapsed_ms = elapsed.as_millis(),
-                    "ConneCat FreeRDP closed"
+                    "ConnCat FreeRDP closed"
                 );
             } else {
-                tracing::warn!(target: "catwalk_client::direct_rdp", session_id = %wait_session_id, exit_code = ?status.as_ref().and_then(|value| value.code()), "ConneCat FreeRDP exited unsuccessfully");
+                tracing::warn!(target: "conncat_client::direct_rdp", session_id = %wait_session_id, exit_code = ?status.as_ref().and_then(|value| value.code()), "ConnCat FreeRDP exited unsuccessfully");
                 let (code, message) = diagnostics.failure();
                 let _ = wait_app.emit(
                     EVENT_NAME,
@@ -1635,7 +1635,7 @@ pub fn disconnect(state: DirectRdpState, session_id: String) -> Result<(), Strin
         .lock()
         .map_err(|_| "Legacy RDP process lock poisoned".to_string())?
         .kill()
-        .map_err(|error| format!("disconnect ConneCat FreeRDP: {error}"));
+        .map_err(|error| format!("disconnect ConnCat FreeRDP: {error}"));
     result
 }
 
@@ -2045,7 +2045,7 @@ mod tests {
         assert_eq!(freerdp_initial_size(&request), (1440, 900));
         let args = freerdp_args(&request);
         // FreeRDP 3.30 forcibly disables this option because its asynchronous
-        // update proxy can lose frames. ConneCat's SDL compatibility patch
+        // update proxy can lose frames. ConnCat's SDL compatibility patch
         // instead prevents repaint batches from starving native input events.
         assert!(!args.contains(&"+async-update".to_string()));
         assert!(args.contains(&"/network:lan".to_string()));
@@ -2123,7 +2123,7 @@ mod tests {
             ),
             Some((
                 "security_protocol_unsupported",
-                "The RDP server requires Enhanced RDP Security with TLS. ConneCat will retry using TLS.",
+                "The RDP server requires Enhanced RDP Security with TLS. ConnCat will retry using TLS.",
             ))
         );
         assert!(viewer_negotiation_failure(

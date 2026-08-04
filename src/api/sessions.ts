@@ -65,10 +65,10 @@ export interface SavedSession {
   /// on an SSH Connection whose primary `port` belongs to SSH.
   rdpPort?: number;
   /// Per-Connection RDP launcher override. Missing means inherit the global
-  /// saved-Connection setting (ConneCat on supported macOS builds by default).
+  /// saved-Connection setting (ConnCat on supported macOS builds by default).
   rdpApp?: "catwalk" | "freerdp" | "system";
-  /// Security transport used by direct ConneCat RDP. Missing defaults to NLA.
-  /// ConneCat updates this after a transport connects successfully so the next
+  /// Security transport used by direct ConnCat RDP. Missing defaults to NLA.
+  /// ConnCat updates this after a transport connects successfully so the next
   /// launch can start with the last known working mode.
   rdpSecurity?: RdpSecurityTransport;
   /// In-app RDP image-quality preset. Missing means balanced, 32-bit output.
@@ -92,7 +92,7 @@ export interface SavedSession {
   /// `ssh -L localPort:destinationHost:destinationPort ...` when SSH opens.
   sshTunnels?: SavedSessionTunnel[];
   /// For web: ordered list of TCP ports to expose as Browse buttons.
-  /// Each opens `https://<host>:<port>` in ConneCat's in-app browser.
+  /// Each opens `https://<host>:<port>` in ConnCat's in-app browser.
   webPorts?: number[];
   notes?: string;
   createdAt: number;

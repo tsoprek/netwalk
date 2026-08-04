@@ -37,28 +37,28 @@ export async function installNativeAppMenu(options: NativeAppMenuOptions) {
 
   const appMenu = await Submenu.new({
     id: "connecat-menu",
-    text: "ConneCat",
+    text: "ConnCat",
     items: [
       await PredefinedMenuItem.new({
         item: {
           About: {
-            name: "ConneCat",
+            name: "ConnCat",
             version: __APP_VERSION__,
             comments: "Local-first standalone remote access workspace",
           },
         },
-        text: "About ConneCat",
+        text: "About ConnCat",
       }),
       await separator(),
       await item("connecat-settings", "Settings…", options.onSettings, "CmdOrCtrl+,"),
       await separator(),
       await PredefinedMenuItem.new({ item: "Services" }),
       await separator(),
-      await PredefinedMenuItem.new({ item: "Hide", text: "Hide ConneCat" }),
+      await PredefinedMenuItem.new({ item: "Hide", text: "Hide ConnCat" }),
       await PredefinedMenuItem.new({ item: "HideOthers" }),
       await PredefinedMenuItem.new({ item: "ShowAll" }),
       await separator(),
-      await PredefinedMenuItem.new({ item: "Quit", text: "Quit ConneCat" }),
+      await PredefinedMenuItem.new({ item: "Quit", text: "Quit ConnCat" }),
     ],
   });
 
@@ -178,7 +178,7 @@ export async function installNativeAppMenu(options: NativeAppMenuOptions) {
       terminalToolbarMenu,
       connectionsToolbarMenu,
       await separator(),
-      await item("view-reload", "Reload ConneCat", options.onReload, "CmdOrCtrl+R"),
+      await item("view-reload", "Reload ConnCat", options.onReload, "CmdOrCtrl+R"),
       await PredefinedMenuItem.new({ item: "Fullscreen" }),
     ],
   });

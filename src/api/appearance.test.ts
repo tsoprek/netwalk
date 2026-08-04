@@ -40,7 +40,7 @@ describe("appearance terminal ANSI accent", () => {
     expect(migrated.brand).toEqual({
       id: "cisco",
       identity: "default",
-      name: "ConneCat",
+      name: "ConnCat",
       logoUrl: "",
       accent: "#049fd9",
     });
@@ -491,7 +491,7 @@ describe("automatic day and night themes", () => {
 });
 
 describe("appearance brand identity isolation", () => {
-  it("restores the light window palette for a saved ConneCat Light theme", () => {
+  it("restores the light window palette for a saved ConnCat Light theme", () => {
     const appearance = resolveAppearance(
       {},
       {
@@ -611,7 +611,7 @@ describe("appearance brand identity isolation", () => {
     );
 
     expect(appearance.brand.id).toBe("connecat");
-    expect(appearance.brand.name).toBe("ConneCat");
+    expect(appearance.brand.name).toBe("ConnCat");
     expect(appearance.brand.logoUrl).toBe("/connecat.png");
   });
 

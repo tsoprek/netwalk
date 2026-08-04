@@ -364,7 +364,7 @@ export default function Notebooks() {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `connecat-notes-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.download = `ConnCat-notes-${new Date().toISOString().slice(0, 10)}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
   }

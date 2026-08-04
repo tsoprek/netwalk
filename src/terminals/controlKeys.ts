@@ -18,7 +18,7 @@ export function terminalControlSequenceForKeyEvent(
   const key = ev.key;
   const letter = key.length === 1 ? key.toUpperCase() : "";
 
-  // ConneCat reserves Control+Tab for main-view navigation. Plain Tab never
+  // ConnCat reserves Control+Tab for main-view navigation. Plain Tab never
   // reaches this helper and remains normal xterm input.
   if (key === "Tab") return null;
 

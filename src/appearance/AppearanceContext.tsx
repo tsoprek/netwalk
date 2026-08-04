@@ -44,7 +44,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
   const [scheduleClock, setScheduleClock] = useState(() => Date.now());
 
   const refreshServer = useCallback(async () => {
-    // ConneCat has no broker or remote configuration source. Keep the local
+    // ConnCat has no broker or remote configuration source. Keep the local
     // production-palette mirror as the standalone server configuration.
     setServerConfig(STANDALONE_APPEARANCE_CONFIG);
   }, []);
@@ -77,7 +77,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     applyToDocument(appearance);
 
     // The standard macOS title bar can follow Aqua/Dark Aqua, but cannot be
-    // assigned ConneCat's arbitrary brand palette. Keep native traffic lights,
+    // assigned ConnCat's arbitrary brand palette. Keep native traffic lights,
     // title text, menus, and window chrome aligned with the selected scheme;
     // Medium intentionally uses dark native chrome.
     const isTauri = typeof window !== "undefined"

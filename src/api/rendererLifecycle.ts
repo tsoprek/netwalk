@@ -99,7 +99,7 @@ export function createRendererHandoff(resetId: string, now = Date.now()): Render
     resetId,
     timestamp: now,
     route: `${location.pathname}${location.search}${location.hash}`,
-    // ConneCat's route viewport is the shell's <main>, not the browser window.
+    // ConnCat's route viewport is the shell's <main>, not the browser window.
     scrollX: content?.scrollLeft ?? window.scrollX,
     scrollY: content?.scrollTop ?? window.scrollY,
   };

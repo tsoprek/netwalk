@@ -297,7 +297,7 @@ export function parseNotebookBackupFile(text: string): NotebookBackupFile {
   if (!value || typeof value !== "object") throw new Error("The selected file is not a notebook backup.");
   const source = value as Partial<NotebookBackupFile>;
   if (source.format !== "catwalk-notebooks-backup" || source.backupVersion !== 1 || !source.store) {
-    throw new Error("The selected file is not a supported ConneCat notebook backup.");
+    throw new Error("The selected file is not a supported ConnCat notebook backup.");
   }
   const rawStore = source.store as Partial<NotebookStore>;
   if (!Array.isArray(rawStore.books) || !Array.isArray(rawStore.sections) || !Array.isArray(rawStore.notes)) {

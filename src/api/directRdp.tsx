@@ -102,11 +102,11 @@ export function reportDirectRdpConnectivity(online: boolean | null): void {
 }
 
 function rdpLog(level: "debug" | "info" | "warn" | "error", message: string, fields: Record<string, unknown> = {}) {
-  diagnosticEvent("rdp", level, "catwalk.direct-rdp", message, fields);
+  diagnosticEvent("rdp", level, "conncat.direct-rdp", message, fields);
   let debugEnabled = false;
   try { debugEnabled = localStorage.getItem("catwalk.rdpDebug") === "1"; } catch { /* diagnostics still records warnings/errors */ }
   if ((level === "debug" || level === "info") && !debugEnabled) return;
-  (console[level] ?? console.log).call(console, `[ConneCat Direct RDP] ${message}`, fields);
+  (console[level] ?? console.log).call(console, `[ConnCat Direct RDP] ${message}`, fields);
 }
 
 function isMacOs(): boolean {
@@ -117,7 +117,7 @@ function isWindows(): boolean {
   return navigator.userAgent.includes("Windows");
 }
 
-function supportsConneCatRdp(): boolean {
+function supportsConnCatRdp(): boolean {
   return isMacOs() || isWindows();
 }
 
@@ -157,14 +157,14 @@ export function effectiveRdpApp(
   session: Pick<SavedSession, "rdpApp">,
   globalDefault?: "catwalk" | "freerdp" | "system",
 ): "catwalk" | "freerdp" | "system" {
-  return session.rdpApp ?? globalDefault ?? (supportsConneCatRdp() ? "catwalk" : "system");
+  return session.rdpApp ?? globalDefault ?? (supportsConnCatRdp() ? "catwalk" : "system");
 }
 
 export function effectiveRdpSecurity(
   session: Pick<SavedSession, "rdpSecurity">,
   remembered?: RdpSecurityTransport,
 ): RdpSecurityTransport {
-  // A user may change the saved transport while ConneCat is still running.
+  // A user may change the saved transport while ConnCat is still running.
   // The current setting must win over an earlier successful fallback cached
   // for this connection, otherwise selecting TLS can unexpectedly reopen the
   // connection through FreeRDP with Standard RDP Security.
@@ -473,8 +473,8 @@ export function DirectRdpProvider({ children }: { children: ReactNode }) {
               .catch((error) => {
                 const message = onePasswordErrorMessage(error);
                 rdpLog("error", reason === "standard_security"
-                  ? "Automatic ConneCat FreeRDP fallback failed"
-                  : "Automatic ConneCat RDP TLS retry failed", {
+                  ? "Automatic ConnCat FreeRDP fallback failed"
+                  : "Automatic ConnCat RDP TLS retry failed", {
                   connection_id: session.id,
                   error: message,
                 });
@@ -546,7 +546,7 @@ export function DirectRdpProvider({ children }: { children: ReactNode }) {
         addLocalNotification({
           kind: "error",
           title: `RDP${session ? ` · ${session.name}` : ""}`,
-          body: `ConneCat RDP viewer exited unexpectedly${payload.code == null ? "." : ` (code ${payload.code}).`} Check Settings → Diagnostics → RDP.`,
+          body: `ConnCat RDP viewer exited unexpectedly${payload.code == null ? "." : ` (code ${payload.code}).`} Check Settings → Diagnostics → RDP.`,
         });
       }
       if (payload.type === "closed" || payload.type === "exit") {
@@ -608,9 +608,9 @@ export function DirectRdpProvider({ children }: { children: ReactNode }) {
       port,
       username_source: resolvedUsername === requestedSession.username ? "saved_session" : "connection_identity",
       selected_app: selectedApp,
-      catwalk_rdp_supported: supportsConneCatRdp(),
+      catwalk_rdp_supported: supportsConnCatRdp(),
     });
-    if (selectedApp === "system" || !supportsConneCatRdp()) {
+    if (selectedApp === "system" || !supportsConnCatRdp()) {
       rdpLog("info", "Launching system RDP client", { connection_id: session.id, host: session.host, port });
       trackRdpUsage("connection.start", "started", "system", "system");
       try {
@@ -754,7 +754,7 @@ export function DirectRdpProvider({ children }: { children: ReactNode }) {
     const prompt = compatibilityPrompt;
     if (!prompt) return;
     setCompatibilityPrompt(null);
-    rdpLog("info", "Opening ConneCat FreeRDP for legacy-security server", {
+    rdpLog("info", "Opening ConnCat FreeRDP for legacy-security server", {
       connection_id: prompt.session.id,
       host: prompt.session.host,
     });
@@ -773,16 +773,16 @@ export function DirectRdpProvider({ children }: { children: ReactNode }) {
       if (credentials) await launchWithCredentials(prompt.session, credentials, "launch_legacy_rdp", "rdp");
     } catch (error) {
       const message = onePasswordErrorMessage(error);
-      rdpLog("error", "ConneCat FreeRDP compatibility launch failed", { connection_id: prompt.session.id, error: message });
+      rdpLog("error", "ConnCat FreeRDP compatibility launch failed", { connection_id: prompt.session.id, error: message });
       addLocalNotification({ kind: "error", title: `RDP · ${prompt.session.name}`, body: message });
     }
   };
 
-  const openConneCatTlsCompatibilityClient = async () => {
+  const openConnCatTlsCompatibilityClient = async () => {
     const prompt = compatibilityPrompt;
     if (!prompt) return;
     setCompatibilityPrompt(null);
-    rdpLog("info", "Retrying through branded ConneCat RDP with TLS security", {
+    rdpLog("info", "Retrying through branded ConnCat RDP with TLS security", {
       connection_id: prompt.session.id,
       host: prompt.session.host,
     });
@@ -801,7 +801,7 @@ export function DirectRdpProvider({ children }: { children: ReactNode }) {
       if (credentials) await launchWithCredentials(prompt.session, credentials, "launch_direct_rdp", "tls");
     } catch (error) {
       const message = onePasswordErrorMessage(error);
-      rdpLog("error", "ConneCat RDP TLS compatibility launch failed", { connection_id: prompt.session.id, error: message });
+      rdpLog("error", "ConnCat RDP TLS compatibility launch failed", { connection_id: prompt.session.id, error: message });
       addLocalNotification({ kind: "error", title: `RDP · ${prompt.session.name}`, body: message });
     }
   };
@@ -883,7 +883,7 @@ export function DirectRdpProvider({ children }: { children: ReactNode }) {
           <p>{reconnectPrompt.phase === "reconnecting"
             ? reconnectPrompt.engine === "freerdp"
               ? "Waiting for VPN or network. Closes automatically after reconnect."
-              : "ConneCat RDP is waiting for the VPN or network to return. This dialog closes automatically when the desktop reconnects."
+              : "ConnCat RDP is waiting for the VPN or network to return. This dialog closes automatically when the desktop reconnects."
             : reconnectPrompt.engine === "freerdp"
               ? "Automatic retries finished. Restore the network, then reopen FreeRDP."
               : "Automatic reconnect attempts are finished. Restore the VPN or network, then reconnect the session."}</p>
@@ -951,21 +951,21 @@ export function DirectRdpProvider({ children }: { children: ReactNode }) {
         </header>
         <div className="app-dialog-body">
           <p>{compatibilityPrompt.tlsAttempted
-            ? "ConneCat could not complete TLS negotiation with this RDP server."
+            ? "ConnCat could not complete TLS negotiation with this RDP server."
             : compatibilityPrompt.reason === "tls_required"
               ? "The server requires Enhanced RDP Security, but it did not accept the initial NLA/CredSSP negotiation."
               : "The server selected Standard RDP Security instead of NLA/CredSSP."}</p>
           <p className="muted">{compatibilityPrompt.tlsAttempted
-            ? "This older RC4-based mode requires ConneCat's FreeRDP fallback or your external RDP client."
-            : "For xrdp servers, ConneCat can retry with TLS in the same branded viewer. TLS encrypts the session but uses the server's graphical login instead of NLA."}</p>
+            ? "This older RC4-based mode requires ConnCat's FreeRDP fallback or your external RDP client."
+            : "For xrdp servers, ConnCat can retry with TLS in the same branded viewer. TLS encrypts the session but uses the server's graphical login instead of NLA."}</p>
           <details className="app-dialog-details"><summary>Technical detail</summary><p className="fingerprint">{compatibilityPrompt.message}</p></details>
         </div>
         <div className="app-dialog-actions">
           <button type="button" className="outline-action-button outline-action-button--muted" onClick={() => setCompatibilityPrompt(null)}><NotesIcon name="cancel" size={15} />Cancel</button>
           <button type="button" className="outline-action-button outline-action-button--muted" onClick={() => void openSystemCompatibilityClient()}><NotesIcon name="rdp" size={15} />External RDP client</button>
           {compatibilityPrompt.tlsAttempted
-            ? <button type="button" className="outline-action-button" autoFocus onClick={() => void openFreeRdpCompatibilityClient()}><NotesIcon name="rdp" size={15} />Open with ConneCat FreeRDP</button>
-            : <button type="button" className="outline-action-button" autoFocus onClick={() => void openConneCatTlsCompatibilityClient()}><NotesIcon name="rdp" size={15} />Retry with ConneCat TLS</button>}
+            ? <button type="button" className="outline-action-button" autoFocus onClick={() => void openFreeRdpCompatibilityClient()}><NotesIcon name="rdp" size={15} />Open with ConnCat FreeRDP</button>
+            : <button type="button" className="outline-action-button" autoFocus onClick={() => void openConnCatTlsCompatibilityClient()}><NotesIcon name="rdp" size={15} />Retry with ConnCat TLS</button>}
         </div>
       </section>
     </div>}

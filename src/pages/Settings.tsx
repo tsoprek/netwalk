@@ -80,7 +80,7 @@ function SwitchStyleSample({ style }: { style: SwitchButtonStyle }) {
 /// Built-in terminal palette presets. Server config can ship more by writing
 /// a full `terminal.theme` object; this list is just a quick picker.
 const TERMINAL_PRESETS: { id: string; label: string; theme: Record<string, string> }[] = [
-  { id: "default", label: "ConneCat (Default)", theme: DEFAULTS.terminal.theme as Record<string, string> },
+  { id: "default", label: "ConnCat (Default)", theme: DEFAULTS.terminal.theme as Record<string, string> },
   {
     id: "solarized-dark",
     label: "Solarized Dark",
@@ -703,7 +703,7 @@ const TERMINAL_FONT_OPTIONS: { label: string; value: string; hint: string }[] = 
   {
     label: "Default (recommended)",
     value: DEFAULTS.terminal.fontFamily,
-    hint: "Current stable ConneCat terminal stack.",
+    hint: "Current stable ConnCat terminal stack.",
   },
   {
     label: "Menlo / Monaco",
@@ -849,9 +849,9 @@ const BRAND_PRESETS: {
     },
     {
       id: "connecat",
-      label: "ConneCat",
+      label: "ConnCat",
       accent: "#049fd9",
-      brandName: "ConneCat",
+      brandName: "ConnCat",
       logoUrl: "/connecat.png",
       colorScheme: "dark",
       terminalPresetId: "cisco",
@@ -1137,7 +1137,7 @@ export default function Settings() {
 
   async function exportDiagnostics() {
     const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-    const destination = await saveDialog({ defaultPath: `catwalk-diagnostics-${stamp}.zip` });
+    const destination = await saveDialog({ defaultPath: `ConnCat-diagnostics-${stamp}.zip` });
     if (!destination) return;
     setDiagnosticsBusy(true);
     setDiagnosticsMessage("");
@@ -1368,7 +1368,7 @@ export default function Settings() {
         ...(base.brand ?? {}),
         id: p.id,
         identity: "default",
-        name: p.brandName ?? "ConneCat",
+        name: p.brandName ?? "ConnCat",
         logoUrl: p.logoUrl ?? "",
         accent: p.accent,
       };
@@ -1402,7 +1402,7 @@ export default function Settings() {
         ...(base.brand ?? {}),
         id: preset.id,
         identity: "custom",
-        name: preset.brand?.name || "ConneCat",
+        name: preset.brand?.name || "ConnCat",
         logoUrl: preset.brand?.logoUrl || "",
       };
       if (preset.brand?.accent) brand.accent = preset.brand.accent;
@@ -1669,7 +1669,7 @@ export default function Settings() {
         <div className="theme-schedule">
           <div className="theme-schedule__header">
             <div className="theme-schedule__copy">
-              <SettingLabel info="Uses this computer's local clock. ConneCat checks the schedule while open and immediately rechecks it when the app regains focus.">
+              <SettingLabel info="Uses this computer's local clock. ConnCat checks the schedule while open and immediately rechecks it when the app regains focus.">
                 Automatic day/night themes
               </SettingLabel>
               <span>Choose an independent theme and color scheme for daytime and nighttime.</span>
@@ -2576,8 +2576,8 @@ export default function Settings() {
                 )}
                 style={{ width: "24ch", maxWidth: "100%" }}
                 options={[
-                  { value: "catwalk", label: "ConneCat RDP (IronRDP)" },
-                  { value: "freerdp", label: "ConneCat FreeRDP" },
+                  { value: "catwalk", label: "ConnCat RDP (IronRDP)" },
+                  { value: "freerdp", label: "ConnCat FreeRDP" },
                   { value: "system", label: "System RDP client" },
                 ]}
               />
@@ -2600,7 +2600,7 @@ export default function Settings() {
                 style={{ width: "22ch", maxWidth: "100%" }}
                 options={[
                   { value: "in_app", label: "In-app browser" },
-                  { value: "window", label: "External ConneCat window" },
+                  { value: "window", label: "External ConnCat window" },
                   { value: "external", label: "Default OS browser" },
                 ]}
               />
@@ -2659,7 +2659,7 @@ export default function Settings() {
               />
                 </div>
                 <div className="form-row">
-              <SettingLabel info="Opens the Identities page from anywhere in the main ConneCat window.">
+              <SettingLabel info="Opens the Identities page from anywhere in the main ConnCat window.">
                 Open Identities
               </SettingLabel>
               <ThemedSelect
@@ -2711,8 +2711,8 @@ export default function Settings() {
                   <span>Built in and not configurable</span>
                 </div>
                 <dl>
-                  <div><dt><kbd>Ctrl</kbd> + <kbd>Tab</kbd></dt><dd>Next ConneCat workspace</dd></div>
-                  <div><dt><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Tab</kbd></dt><dd>Previous ConneCat workspace</dd></div>
+                  <div><dt><kbd>Ctrl</kbd> + <kbd>Tab</kbd></dt><dd>Next ConnCat workspace</dd></div>
+                  <div><dt><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Tab</kbd></dt><dd>Previous ConnCat workspace</dd></div>
                   <div><dt><kbd>Ctrl</kbd> + <kbd>PageUp</kbd></dt><dd>Previous Sessions or Remote Access tab</dd></div>
                   <div><dt><kbd>Ctrl</kbd> + <kbd>PageDown</kbd></dt><dd>Next Sessions or Remote Access tab</dd></div>
                   <div><dt><kbd>Ctrl</kbd> + <kbd>1…9</kbd></dt><dd>Open Sessions or Remote Access tab by position</dd></div>
@@ -2935,7 +2935,7 @@ export default function Settings() {
           summaryStyle={{ cursor: "pointer" }}
         >
         <p style={{ color: "var(--muted)", marginTop: 0 }}>
-          Enable scoped debug logging for this ConneCat installation. Warning and error events are always retained;
+          Enable scoped debug logging for this ConnCat installation. Warning and error events are always retained;
           terminal content, file contents, credentials, screenshots, and clipboard data are never collected.
         </p>
         {diagnostics ? (
@@ -3012,7 +3012,7 @@ export default function Settings() {
                 </div>
               </header>
               <div className="app-dialog-body">
-                <p>This removes the current and rotated ConneCat logs. Enabled diagnostic channels and remote-support settings will not change.</p>
+                <p>This removes the current and rotated ConnCat logs. Enabled diagnostic channels and remote-support settings will not change.</p>
               </div>
               <div className="app-dialog-actions">
                 <button type="button" className="outline-action-button outline-action-button--muted" onClick={() => setShowClearDiagnosticsConfirm(false)}>
@@ -3037,7 +3037,7 @@ export default function Settings() {
             summaryStyle={{ cursor: "pointer" }}
           >
             <p style={{ color: "var(--muted)", marginTop: 0 }}>
-              Recreate the macOS renderer to release graphics backing stores retained by WebKit. ConneCat keeps the
+              Recreate the macOS renderer to release graphics backing stores retained by WebKit. ConnCat keeps the
               native window, local preferences, and this route.
             </p>
             <div className="renderer-memory-controls">
@@ -3045,7 +3045,7 @@ export default function Settings() {
                 <div>
                   <strong>Recover after background idle</strong>
                   <p>
-                    Enabled by default on macOS. ConneCat may recover after five minutes in the background on safe
+                    Enabled by default on macOS. ConnCat may recover after five minutes in the background on safe
                     local routes, following substantial navigation or resize activity and no
                     more than once per hour. Open editors and unsaved changes block recovery.
                   </p>
@@ -3098,12 +3098,12 @@ export default function Settings() {
                     <span className="app-dialog-icon" aria-hidden="true"><NotesIcon name="sync" size={21} /></span>
                     <div>
                       <h3 id="renderer-reset-title">Reclaim renderer memory?</h3>
-                      <p>The ConneCat interface will briefly disappear and return.</p>
+                      <p>The ConnCat interface will briefly disappear and return.</p>
                     </div>
                   </header>
                   <div className="app-dialog-body">
                     <p>
-                      Your route, scroll position, theme, and saved preferences will be restored. ConneCat
+                      Your route, scroll position, theme, and saved preferences will be restored. ConnCat
                       checks again for active sessions before replacing the renderer.
                     </p>
                   </div>

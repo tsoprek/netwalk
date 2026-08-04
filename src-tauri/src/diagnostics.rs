@@ -57,6 +57,14 @@ const MAX_LOG_FILES: usize = 5;
 const MAX_BUNDLE_BYTES: u64 = 50 * 1024 * 1024;
 const MAX_JSON_BODY: usize = 8 * 1024;
 const MAX_PENDING_LOG_RECORDS: usize = 4096;
+const LOG_BASENAME: &str = "conncat";
+const LEGACY_LOG_BASENAME: &str = "catwalk";
+
+fn diagnostic_log_paths(dir: &Path, basename: &str) -> Vec<PathBuf> {
+    let mut paths = vec![dir.join(format!("{basename}.jsonl"))];
+    paths.extend((1..MAX_LOG_FILES).map(|index| dir.join(format!("{basename}.{index}.jsonl"))));
+    paths
+}
 
 fn channel_log_filename(channel: &str) -> &'static str {
     match channel {
@@ -147,7 +155,7 @@ impl DiagnosticsManager {
         let writer_dir = dir.clone();
         let writer_io = Arc::clone(&log_io);
         thread::Builder::new()
-            .name("catwalk-diagnostics-writer".into())
+            .name("conncat-diagnostics-writer".into())
             .spawn(move || {
                 while let Ok(command) = log_rx.recv() {
                     match command {
@@ -280,8 +288,9 @@ impl DiagnosticsManager {
             .log_io
             .lock()
             .map_err(|_| "diagnostics log lock poisoned".to_string())?;
-        for path in std::iter::once(self.dir.join("catwalk.jsonl"))
-            .chain((1..MAX_LOG_FILES).map(|index| self.dir.join(format!("catwalk.{index}.jsonl"))))
+        for path in diagnostic_log_paths(&self.dir, LOG_BASENAME)
+            .into_iter()
+            .chain(diagnostic_log_paths(&self.dir, LEGACY_LOG_BASENAME))
         {
             match fs::remove_file(&path) {
                 Ok(()) => {}
@@ -299,8 +308,11 @@ impl DiagnosticsManager {
     }
 
     fn log_paths(&self) -> Vec<PathBuf> {
-        let mut out = vec![self.dir.join("catwalk.jsonl")];
-        out.extend((1..MAX_LOG_FILES).map(|i| self.dir.join(format!("catwalk.{i}.jsonl"))));
+        // New ConnCat logs are listed first (newest set), followed by legacy
+        // Catwalk logs. component_logs reverses the combined list so an
+        // upgrade exports the older legacy records before current records.
+        let mut out = diagnostic_log_paths(&self.dir, LOG_BASENAME);
+        out.extend(diagnostic_log_paths(&self.dir, LEGACY_LOG_BASENAME));
         out.into_iter().filter(|p| p.is_file()).collect()
     }
 
@@ -389,7 +401,7 @@ impl DiagnosticsManager {
         zip.start_file("logs/README.txt", options)
             .map_err(|e| e.to_string())?;
         zip.write_all(
-            b"ConneCat diagnostics are separated by component. Each JSONL file is chronological and contains one redacted event per line.\n",
+            b"ConnCat diagnostics are separated by component. Each JSONL file is chronological and contains one redacted event per line.\n",
         )
         .map_err(|e| e.to_string())?;
         for (channel, contents) in self.component_logs()? {
@@ -411,7 +423,7 @@ fn append_log_record(dir: &Path, log_io: &Mutex<()>, bytes: &[u8]) -> Result<(),
     let _guard = log_io
         .lock()
         .map_err(|_| "diagnostics log lock poisoned".to_string())?;
-    let path = dir.join("catwalk.jsonl");
+    let path = dir.join(format!("{LOG_BASENAME}.jsonl"));
     let size = fs::metadata(&path)
         .map(|metadata| metadata.len())
         .unwrap_or(0);
@@ -427,18 +439,19 @@ fn append_log_record(dir: &Path, log_io: &Mutex<()>, bytes: &[u8]) -> Result<(),
 }
 
 fn rotate_logs(dir: &Path) -> Result<(), String> {
-    let oldest = dir.join(format!("catwalk.{}.jsonl", MAX_LOG_FILES - 1));
+    let oldest = dir.join(format!("{LOG_BASENAME}.{}.jsonl", MAX_LOG_FILES - 1));
     let _ = fs::remove_file(oldest);
     for index in (1..MAX_LOG_FILES - 1).rev() {
-        let from = dir.join(format!("catwalk.{index}.jsonl"));
-        let to = dir.join(format!("catwalk.{}.jsonl", index + 1));
+        let from = dir.join(format!("{LOG_BASENAME}.{index}.jsonl"));
+        let to = dir.join(format!("{LOG_BASENAME}.{}.jsonl", index + 1));
         if from.exists() {
             fs::rename(from, to).map_err(|error| error.to_string())?;
         }
     }
-    let current = dir.join("catwalk.jsonl");
+    let current = dir.join(format!("{LOG_BASENAME}.jsonl"));
     if current.exists() {
-        fs::rename(current, dir.join("catwalk.1.jsonl")).map_err(|error| error.to_string())?;
+        fs::rename(current, dir.join(format!("{LOG_BASENAME}.1.jsonl")))
+            .map_err(|error| error.to_string())?;
     }
     Ok(())
 }
@@ -446,9 +459,11 @@ fn rotate_logs(dir: &Path) -> Result<(), String> {
 pub fn install_tracing(manager: Arc<DiagnosticsManager>) {
     let _ = GLOBAL.set(manager);
     // Cap noisy third-party crates at INFO so hyper/reqwest TRACE stops
-    // filling core_ui. ConneCat targets keep TRACE for debug channels.
+    // filling core_ui. ConnCat targets keep TRACE for debug channels.
     let filter = Targets::new()
         .with_default(Level::INFO)
+        .with_target("conncat", Level::TRACE)
+        .with_target("conncat_client", Level::TRACE)
         .with_target("catwalk", Level::TRACE)
         .with_target("catwalk_client", Level::TRACE)
         .with_target("catwalk_shared", Level::TRACE)
@@ -648,7 +663,7 @@ mod tests {
 
     fn manager() -> (Arc<DiagnosticsManager>, PathBuf) {
         let dir =
-            std::env::temp_dir().join(format!("catwalk-diagnostics-test-{}", uuid::Uuid::new_v4()));
+            std::env::temp_dir().join(format!("conncat-diagnostics-test-{}", uuid::Uuid::new_v4()));
         fs::create_dir_all(&dir).unwrap();
         let manager =
             DiagnosticsManager::with_state(dir.clone(), LocalConfig::default(), None).unwrap();
@@ -671,17 +686,17 @@ mod tests {
     #[test]
     fn maps_native_targets_to_channels() {
         assert!(!CHANNELS.iter().any(|channel| channel.0 == "vm_cml_console"));
-        assert_eq!(channel_for_target("catwalk_client::sftp"), "sftp");
-        assert_eq!(channel_for_target("catwalk_client::tunnel"), "ssh_tunnel");
+        assert_eq!(channel_for_target("conncat_client::sftp"), "sftp");
+        assert_eq!(channel_for_target("conncat_client::tunnel"), "ssh_tunnel");
         assert_eq!(
-            channel_for_target("catwalk_client::browse_proxy"),
+            channel_for_target("conncat_client::browse_proxy"),
             "browse_proxy"
         );
         assert_eq!(
-            channel_for_target("catwalk_client::updates"),
+            channel_for_target("conncat_client::updates"),
             "enrollment_updates"
         );
-        assert_eq!(channel_for_target("catwalk_client::console"), "core_ui");
+        assert_eq!(channel_for_target("conncat_client::console"), "core_ui");
     }
 
     #[test]
@@ -752,6 +767,11 @@ mod tests {
     fn bundle_contains_manifest_and_redacted_logs() {
         let (manager, dir) = manager();
         manager.set_local(vec!["api".into(), "rdp".into()]).unwrap();
+        fs::write(
+            dir.join("catwalk.jsonl"),
+            b"{\"channel\":\"core_ui\",\"message\":\"legacy diagnostic retained\"}\n",
+        )
+        .unwrap();
         manager.event(
             "api",
             "debug",
@@ -765,8 +785,21 @@ mod tests {
         let file = fs::File::open(&path).unwrap();
         let mut archive = zip::ZipArchive::new(file).unwrap();
         assert!(archive.by_name("manifest.json").is_ok());
-        assert!(archive.by_name("logs/README.txt").is_ok());
+        let mut bundled_readme = String::new();
+        archive
+            .by_name("logs/README.txt")
+            .unwrap()
+            .read_to_string(&mut bundled_readme)
+            .unwrap();
+        assert!(bundled_readme.contains("ConnCat diagnostics"));
         assert!(archive.by_name("logs/vm-cml-consoles.jsonl").is_err());
+        let mut core_log = String::new();
+        archive
+            .by_name("logs/core-ui.jsonl")
+            .unwrap()
+            .read_to_string(&mut core_log)
+            .unwrap();
+        assert!(core_log.contains("legacy diagnostic retained"));
         let mut api_log = String::new();
         archive
             .by_name("logs/local-service-api.jsonl")
@@ -792,17 +825,20 @@ mod tests {
         let (manager, dir) = manager();
         manager.set_local(vec!["api".into()]).unwrap();
         manager.event("api", "debug", "test", "before clear", json!({}));
-        fs::write(dir.join("catwalk.1.jsonl"), b"old rotated log\n").unwrap();
+        fs::write(dir.join("catwalk.1.jsonl"), b"old legacy rotated log\n").unwrap();
+        fs::write(dir.join("conncat.1.jsonl"), b"old current rotated log\n").unwrap();
 
         let status = manager.clear_logs().unwrap();
         assert_eq!(status.log_bytes, 0);
         assert!(dir.join("config.json").is_file());
         assert!(!dir.join("catwalk.jsonl").exists());
         assert!(!dir.join("catwalk.1.jsonl").exists());
+        assert!(!dir.join("conncat.jsonl").exists());
+        assert!(!dir.join("conncat.1.jsonl").exists());
 
         manager.event("api", "debug", "test", "after clear", json!({}));
         manager.flush_pending().unwrap();
-        assert!(fs::read_to_string(dir.join("catwalk.jsonl"))
+        assert!(fs::read_to_string(dir.join("conncat.jsonl"))
             .unwrap()
             .contains("after clear"));
         let _ = fs::remove_dir_all(dir);

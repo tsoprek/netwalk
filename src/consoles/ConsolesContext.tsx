@@ -127,7 +127,7 @@ export function ConsolesProvider({ children }: { children: ReactNode }) {
     openSftp,
     adoptBrowser: async (_webviewLabel, url, label) => openBrowser(url, label),
     adoptEngine: async (_webviewLabel: string, _launch: SessionWindowLaunch) => {
-      throw new Error("Broker console engines are not part of standalone ConneCat.");
+      throw new Error("Broker console engines are not part of standalone ConnCat.");
     },
     close,
     release,

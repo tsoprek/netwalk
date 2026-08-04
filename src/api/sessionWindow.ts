@@ -14,13 +14,13 @@ const ADOPTION_EVENT = "catwalk:session-window-adoption";
 export const MAIN_WINDOW_NAVIGATE_EVENT = "catwalk:main-window-navigate";
 let nextSessionWindowId = 1;
 
-export function isConneCatSessionWindow(): boolean {
+export function isConnCatSessionWindow(): boolean {
   return typeof window !== "undefined"
     && new URLSearchParams(window.location.search).get("catwalkSessionWindow") === "1";
 }
 
 /** Keep app-level navigation out of focused session windows. */
-export async function openInMainConneCat(path: string): Promise<void> {
+export async function openInMainConnCat(path: string): Promise<void> {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const isTauri = typeof window !== "undefined"
     && ("__TAURI_INTERNALS__" in window || "__TAURI__" in window);
@@ -35,7 +35,7 @@ export async function openInMainConneCat(path: string): Promise<void> {
     import("@tauri-apps/api/webviewWindow"),
   ]);
   const main = await WebviewWindow.getByLabel("main");
-  if (!main) throw new Error("The main ConneCat window is unavailable.");
+  if (!main) throw new Error("The main ConnCat window is unavailable.");
 
   await emitTo("main", MAIN_WINDOW_NAVIGATE_EVENT, { path: normalizedPath });
   await main.show();
@@ -70,7 +70,7 @@ export async function markSessionWindowAdopted(token: string): Promise<void> {
   if (!isTauri) return;
   const { emit } = await import("@tauri-apps/api/event");
   await emit(ADOPTION_EVENT, { token, success: true });
-  diagnosticEvent("core_ui", "info", "catwalk.session-window", "Live session adopted by child window", {
+  diagnosticEvent("core_ui", "info", "conncat.session-window", "Live session adopted by child window", {
     transfer_token: token,
   });
 }
@@ -82,7 +82,7 @@ export async function reportSessionWindowAdoptionFailure(token: string, reason: 
   const message = reason instanceof Error ? reason.message : String(reason);
   const { emit } = await import("@tauri-apps/api/event");
   await emit(ADOPTION_EVENT, { token, success: false, message });
-  diagnosticEvent("core_ui", "error", "catwalk.session-window", "Child window failed to adopt live session", {
+  diagnosticEvent("core_ui", "error", "conncat.session-window", "Child window failed to adopt live session", {
     transfer_token: token,
     error: message,
   });
@@ -98,11 +98,11 @@ async function waitForStoredSessionWindowAdoption(token: string): Promise<void> 
     }
     await new Promise((resolve) => window.setTimeout(resolve, 40));
   }
-  throw new Error("The new ConneCat window did not adopt the live session in time.");
+  throw new Error("The new ConnCat window did not adopt the live session in time.");
 }
 
-/** Creates a trusted ConneCat child window and transfers/reconstructs a session. */
-export async function openConneCatSessionWindow(
+/** Creates a trusted ConnCat child window and transfers/reconstructs a session. */
+export async function openConnCatSessionWindow(
   launch: SessionWindowLaunch,
   title: string,
 ): Promise<void> {
@@ -111,7 +111,7 @@ export async function openConneCatSessionWindow(
     || (launch.kind === "terminal" && launch.ptyId != null)
     || (launch.kind === "terminal_group" && !!launch.ptyIds?.length)
     || ((launch.kind === "vm" || launch.kind === "cml" || launch.kind === "rdp") && !!launch.webviewLabel);
-  diagnosticEvent("core_ui", "info", "catwalk.session-window", "Opening ConneCat session window", {
+  diagnosticEvent("core_ui", "info", "conncat.session-window", "Opening ConnCat session window", {
     transfer_token: token,
     session_kind: launch.kind,
     requires_adoption: requiresAdoption,
@@ -138,7 +138,7 @@ export async function openConneCatSessionWindow(
     ? await listen<{ token?: string; success?: boolean; message?: string }>(ADOPTION_EVENT, (event) => {
         if (event.payload.token !== token) return;
         if (event.payload.success === false) {
-          rejectAdoption(new Error(event.payload.message || "The new ConneCat window could not adopt the live session."));
+          rejectAdoption(new Error(event.payload.message || "The new ConnCat window could not adopt the live session."));
         } else {
           localStorage.removeItem(`${ADOPTED_PREFIX}${token}`);
           resolveAdoption();
@@ -148,7 +148,7 @@ export async function openConneCatSessionWindow(
   const label = `session-${Date.now()}-${nextSessionWindowId++}`;
   const child = new WebviewWindow(label, {
     url: `/?catwalkSessionWindow=1&launch=${encodeURIComponent(token)}`,
-    title: title.trim() || "ConneCat Session",
+    title: title.trim() || "ConnCat Session",
     width: 1280,
     height: 820,
     minWidth: 640,
@@ -164,16 +164,16 @@ export async function openConneCatSessionWindow(
       void child.once("tauri://created", () => resolve());
       void child.once("tauri://error", (event) => {
         localStorage.removeItem(`${STORAGE_PREFIX}${token}`);
-        reject(new Error(String(event.payload || "Failed to open ConneCat session window.")));
+        reject(new Error(String(event.payload || "Failed to open ConnCat session window.")));
       });
     });
-    diagnosticEvent("core_ui", "debug", "catwalk.session-window", "ConneCat session window created", {
+    diagnosticEvent("core_ui", "debug", "conncat.session-window", "ConnCat session window created", {
       transfer_token: token,
       window_label: label,
     });
     if (requiresAdoption) {
       await Promise.race([nativeAdoption, waitForStoredSessionWindowAdoption(token)]);
-      diagnosticEvent("core_ui", "info", "catwalk.session-window", "Parent confirmed live session adoption", {
+      diagnosticEvent("core_ui", "info", "conncat.session-window", "Parent confirmed live session adoption", {
         transfer_token: token,
         window_label: label,
       });
@@ -182,7 +182,7 @@ export async function openConneCatSessionWindow(
     localStorage.removeItem(`${STORAGE_PREFIX}${token}`);
     localStorage.removeItem(`${ADOPTED_PREFIX}${token}`);
     try { await child.close(); } catch { /* best effort cleanup */ }
-    diagnosticEvent("core_ui", "error", "catwalk.session-window", "ConneCat session window handoff failed", {
+    diagnosticEvent("core_ui", "error", "conncat.session-window", "ConnCat session window handoff failed", {
       transfer_token: token,
       window_label: label,
       error: error instanceof Error ? error.message : String(error),

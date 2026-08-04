@@ -32,7 +32,7 @@ import {
 } from "../sftp/entryView";
 
 // Standalone builds intentionally keep transfer telemetry on-device only.
-const trackConneCatUsageEvent = (_event: unknown) => {};
+const trackConnCatUsageEvent = (_event: unknown) => {};
 
 /// Two-pane SFTP browser. Left pane = remote (via russh-sftp). Right pane
 /// is intentionally light: a recent transfers log. For downloads we save
@@ -116,18 +116,18 @@ export default function SftpBrowser(props: SftpBrowserProps = {}) {
     const activeSessionId = sessionIdRef.current;
     if (activeSessionId == null) return;
     sessionIdRef.current = null;
-    diagnosticEvent("sftp", "info", "catwalk.sftp", "SFTP disconnect requested", {
+    diagnosticEvent("sftp", "info", "conncat.sftp", "SFTP disconnect requested", {
       session_id: activeSessionId,
       reason,
     });
     try {
       await sftpDisconnect(activeSessionId);
-      diagnosticEvent("sftp", "info", "catwalk.sftp", "SFTP disconnect completed", {
+      diagnosticEvent("sftp", "info", "conncat.sftp", "SFTP disconnect completed", {
         session_id: activeSessionId,
         reason,
       });
     } catch (error) {
-      diagnosticEvent("sftp", "warn", "catwalk.sftp", "SFTP disconnect failed", {
+      diagnosticEvent("sftp", "warn", "conncat.sftp", "SFTP disconnect failed", {
         session_id: activeSessionId,
         reason,
         error: error instanceof Error ? error.message : String(error),
@@ -328,13 +328,13 @@ export default function SftpBrowser(props: SftpBrowserProps = {}) {
           fileCount: jobs.length,
           state: "transferring",
         });
-        trackConneCatUsageEvent({ action_id: "transfer.start", component_id: "catwalk.sftp", feature_id: "sftp", outcome: "started", metadata: { transfer_direction: "download" } });
+        trackConnCatUsageEvent({ action_id: "transfer.start", component_id: "conncat.sftp", feature_id: "sftp", outcome: "started", metadata: { transfer_direction: "download" } });
         const n = await sftpDownload(sessionId, item.path, destination, activeTransferId);
         setTransfer((current) => current?.transferId === activeTransferId
           ? { ...current, transferred: n, total: current.total || n, state: "complete" }
           : current);
         pushLog(`↓ ${item.name} (${human(n)}) → ${destination}`, true);
-        trackConneCatUsageEvent({ action_id: "transfer.success", component_id: "catwalk.sftp", feature_id: "sftp", outcome: "success", quantity_name: "bytes", quantity_value: n, metadata: { transfer_direction: "download" } });
+        trackConnCatUsageEvent({ action_id: "transfer.success", component_id: "conncat.sftp", feature_id: "sftp", outcome: "success", quantity_name: "bytes", quantity_value: n, metadata: { transfer_direction: "download" } });
       }
     } catch (e: any) {
       const msg = e.message ?? String(e);
@@ -347,7 +347,7 @@ export default function SftpBrowser(props: SftpBrowserProps = {}) {
       } else {
         setErr(msg);
         pushLog(`Download failed: ${msg}`, false);
-        trackConneCatUsageEvent({ action_id: "transfer.failure", component_id: "catwalk.sftp", feature_id: "sftp", outcome: "failure", metadata: { transfer_direction: "download" } });
+        trackConnCatUsageEvent({ action_id: "transfer.failure", component_id: "conncat.sftp", feature_id: "sftp", outcome: "failure", metadata: { transfer_direction: "download" } });
       }
     } finally {
       setBusy(false);
@@ -388,13 +388,13 @@ export default function SftpBrowser(props: SftpBrowserProps = {}) {
           fileCount: paths.length,
           state: "transferring",
         });
-        trackConneCatUsageEvent({ action_id: "transfer.start", component_id: "catwalk.sftp", feature_id: "sftp", outcome: "started", metadata: { transfer_direction: "upload" } });
+        trackConnCatUsageEvent({ action_id: "transfer.start", component_id: "conncat.sftp", feature_id: "sftp", outcome: "started", metadata: { transfer_direction: "upload" } });
         const n = await sftpUpload(sessionId, local, remote, transferId);
         setTransfer((current) => current?.transferId === transferId
           ? { ...current, transferred: n, total: current.total || n, state: "complete" }
           : current);
         pushLog(`↑ ${name} (${human(n)}) → ${remote}`, true);
-        trackConneCatUsageEvent({ action_id: "transfer.success", component_id: "catwalk.sftp", feature_id: "sftp", outcome: "success", quantity_name: "bytes", quantity_value: n, metadata: { transfer_direction: "upload" } });
+        trackConnCatUsageEvent({ action_id: "transfer.success", component_id: "conncat.sftp", feature_id: "sftp", outcome: "success", quantity_name: "bytes", quantity_value: n, metadata: { transfer_direction: "upload" } });
       }
       await refresh();
     } catch (e: any) {
@@ -408,7 +408,7 @@ export default function SftpBrowser(props: SftpBrowserProps = {}) {
       } else {
         setErr(msg);
         pushLog(`Upload failed: ${msg}`, false);
-        trackConneCatUsageEvent({ action_id: "transfer.failure", component_id: "catwalk.sftp", feature_id: "sftp", outcome: "failure", metadata: { transfer_direction: "upload" } });
+        trackConnCatUsageEvent({ action_id: "transfer.failure", component_id: "conncat.sftp", feature_id: "sftp", outcome: "failure", metadata: { transfer_direction: "upload" } });
       }
     } finally {
       setBusy(false);
@@ -418,7 +418,7 @@ export default function SftpBrowser(props: SftpBrowserProps = {}) {
   async function cancelTransfer() {
     if (!transfer || (transfer.state !== "transferring" && transfer.state !== "cancelling")) return;
     const transferId = transfer.transferId;
-    trackConneCatUsageEvent({ action_id: "transfer.cancel", component_id: "catwalk.sftp", feature_id: "sftp", outcome: "cancelled", metadata: { transfer_direction: transfer.direction } });
+    trackConnCatUsageEvent({ action_id: "transfer.cancel", component_id: "conncat.sftp", feature_id: "sftp", outcome: "cancelled", metadata: { transfer_direction: transfer.direction } });
     setTransfer((current) => current?.transferId === transferId
       ? { ...current, state: "cancelling" }
       : current);

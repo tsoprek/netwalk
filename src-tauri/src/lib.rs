@@ -122,7 +122,7 @@ fn onepassword_executable() -> std::path::PathBuf {
         }
     });
     tracing::debug!(
-        target: "catwalk_client::ssh_onepassword",
+        target: "conncat_client::ssh_onepassword",
         executable = %executable.display(),
         candidate_count,
         metadata_fallback,
@@ -143,15 +143,15 @@ fn onepassword_command() -> std::process::Command {
 fn onepassword_cli_not_found_message() -> &'static str {
     #[cfg(target_os = "macos")]
     {
-        "1Password CLI is not installed or is not available in PATH. Install it with `brew install 1password-cli`, then restart ConneCat."
+        "1Password CLI is not installed or is not available in PATH. Install it with `brew install 1password-cli`, then restart ConnCat."
     }
     #[cfg(target_os = "windows")]
     {
-        "1Password CLI is not installed or is not available in PATH. Install it with `winget install 1password-cli`, then restart ConneCat."
+        "1Password CLI is not installed or is not available in PATH. Install it with `winget install 1password-cli`, then restart ConnCat."
     }
     #[cfg(not(any(target_os = "macos", target_os = "windows")))]
     {
-        "1Password CLI is not installed or is not available in PATH. Install the 1Password CLI for your operating system, then restart ConneCat."
+        "1Password CLI is not installed or is not available in PATH. Install the 1Password CLI for your operating system, then restart ConnCat."
     }
 }
 
@@ -162,7 +162,7 @@ fn onepassword_output(mut command: std::process::Command) -> Result<Vec<u8>, Str
     let executable = command.get_program().to_string_lossy().into_owned();
     let output = command.output().map_err(|error| {
         tracing::warn!(
-            target: "catwalk_client::ssh_onepassword",
+            target: "conncat_client::ssh_onepassword",
             executable = %executable,
             executable_exists = std::path::Path::new(&executable).exists(),
             executable_is_file = std::path::Path::new(&executable).is_file(),
@@ -178,7 +178,7 @@ fn onepassword_output(mut command: std::process::Command) -> Result<Vec<u8>, Str
     })?;
     if !output.status.success() {
         tracing::warn!(
-            target: "catwalk_client::ssh_onepassword",
+            target: "conncat_client::ssh_onepassword",
             executable = %executable,
             exit_code = ?output.status.code(),
             stderr_bytes = output.stderr.len(),
@@ -192,7 +192,7 @@ fn onepassword_output(mut command: std::process::Command) -> Result<Vec<u8>, Str
         });
     }
     tracing::debug!(
-        target: "catwalk_client::ssh_onepassword",
+        target: "conncat_client::ssh_onepassword",
         executable = %executable,
         stdout_bytes = output.stdout.len(),
         "1Password CLI request completed"
@@ -267,7 +267,7 @@ async fn onepassword_list_logins(
         .as_deref()
         .is_some_and(|value| !value.trim().is_empty());
     tracing::info!(
-        target: "catwalk_client::ssh_onepassword",
+        target: "conncat_client::ssh_onepassword",
         operation = "list_login_items",
         has_account_selector,
         "1Password Login item listing requested"
@@ -292,14 +292,14 @@ async fn onepassword_list_logins(
     let duration_ms = started.elapsed().as_millis() as u64;
     match &result {
         Ok(items) => tracing::info!(
-            target: "catwalk_client::ssh_onepassword",
+            target: "conncat_client::ssh_onepassword",
             operation = "list_login_items",
             duration_ms,
             item_count = items.len(),
             "1Password Login item listing completed"
         ),
         Err(error) => tracing::warn!(
-            target: "catwalk_client::ssh_onepassword",
+            target: "conncat_client::ssh_onepassword",
             operation = "list_login_items",
             duration_ms,
             error_code = onepassword_error_code(error),
@@ -349,7 +349,7 @@ async fn onepassword_resolve_login(
         .as_deref()
         .is_some_and(|value| !value.trim().is_empty());
     tracing::info!(
-        target: "catwalk_client::ssh_onepassword",
+        target: "conncat_client::ssh_onepassword",
         operation = "resolve_login",
         has_account_selector,
         "1Password Login resolution requested"
@@ -378,13 +378,13 @@ async fn onepassword_resolve_login(
     let duration_ms = started.elapsed().as_millis() as u64;
     match &result {
         Ok(_) => tracing::info!(
-            target: "catwalk_client::ssh_onepassword",
+            target: "conncat_client::ssh_onepassword",
             operation = "resolve_login",
             duration_ms,
             "1Password Login resolution completed"
         ),
         Err(error) => tracing::warn!(
-            target: "catwalk_client::ssh_onepassword",
+            target: "conncat_client::ssh_onepassword",
             operation = "resolve_login",
             duration_ms,
             error_code = onepassword_error_code(error),
@@ -1033,7 +1033,7 @@ pub fn run() {
 }
 
 /// WebView2 hardware acceleration can retain a stale DirectComposition device
-/// whenever the Windows display session is replaced. ConneCat may start on the
+/// whenever the Windows display session is replaced. ConnCat may start on the
 /// physical console and only later receive an incoming RDP connection, so the
 /// startup `SESSIONNAME` cannot reliably predict whether this transition will
 /// happen. Software rendering must be selected before Tauri creates its first
@@ -1099,7 +1099,7 @@ fn windows_desktop_session_recovery_ready(
 /// an existing RDP session disconnects and reconnects. In that failure mode
 /// the renderer remains alive but no longer paints or accepts input, so the
 /// application looks frozen and the normal renderer recovery callback cannot
-/// help. Watch the native desktop-session state and reload each ConneCat window
+/// help. Watch the native desktop-session state and reload each ConnCat window
 /// only after the new active desktop has remained stable for five seconds.
 ///
 /// Do not reload while entering a disconnected state. Windows is still
@@ -1135,7 +1135,7 @@ fn install_windows_desktop_session_recovery(app: AppHandle) {
                 candidate = None;
                 if !recover {
                     tracing::debug!(
-                        target: "catwalk_client::webview2",
+                        target: "conncat_client::webview2",
                         current_remote = current.remote,
                         current_connect_state = current.connect_state,
                         "Windows desktop session stabilized without an active WebView2 recovery"
@@ -1144,7 +1144,7 @@ fn install_windows_desktop_session_recovery(app: AppHandle) {
                 }
 
                 tracing::warn!(
-                    target: "catwalk_client::webview2",
+                    target: "conncat_client::webview2",
                     current_remote = current.remote,
                     current_connect_state = current.connect_state,
                     stable_samples = samples,
@@ -1153,7 +1153,7 @@ fn install_windows_desktop_session_recovery(app: AppHandle) {
                 for (label, window) in app.webview_windows() {
                     if let Err(error) = window.reload() {
                         tracing::error!(
-                            target: "catwalk_client::webview2",
+                            target: "conncat_client::webview2",
                             webview = %label,
                             error = %error,
                             "failed to reload WebView2 after Windows desktop session change"
@@ -1164,7 +1164,7 @@ fn install_windows_desktop_session_recovery(app: AppHandle) {
         })
     {
         tracing::error!(
-            target: "catwalk_client::webview2",
+            target: "conncat_client::webview2",
             error = %error,
             "failed to start Windows desktop session watcher"
         );
@@ -1269,7 +1269,7 @@ fn install_webview2_recovery<R: tauri::Runtime>(webview: tauri::Webview<R>) {
     };
     use webview2_com::ProcessFailedEventHandler;
 
-    const DIAGNOSTIC_TARGET: &str = "catwalk_client::webview2";
+    const DIAGNOSTIC_TARGET: &str = "conncat_client::webview2";
     let label = webview.label().to_string();
     let setup_label = label.clone();
     let result = webview.with_webview(move |platform| {
@@ -1487,7 +1487,7 @@ mod onepassword_tests {
     fn reports_platform_specific_cli_install_instructions() {
         let message = onepassword_cli_not_found_message();
         assert!(message.contains("1Password CLI is not installed or is not available in PATH"));
-        assert!(message.contains("restart ConneCat"));
+        assert!(message.contains("restart ConnCat"));
         #[cfg(target_os = "macos")]
         assert!(message.contains("brew install 1password-cli"));
         #[cfg(target_os = "windows")]

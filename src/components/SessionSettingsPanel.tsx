@@ -949,18 +949,18 @@ export default function SessionSettingsPanel({
                 value: "",
                 label: `Default - ${
                   effectiveRdpApp(s, appearance.savedConnectionRdpApp) === "catwalk"
-                    ? "ConneCat RDP (IronRDP)"
+                    ? "ConnCat RDP (IronRDP)"
                     : effectiveRdpApp(s, appearance.savedConnectionRdpApp) === "freerdp"
-                      ? "ConneCat FreeRDP"
+                      ? "ConnCat FreeRDP"
                       : "System RDP"
                 }`,
               },
-              { value: "catwalk", label: "ConneCat RDP (IronRDP)" },
-              { value: "freerdp", label: "ConneCat FreeRDP" },
+              { value: "catwalk", label: "ConnCat RDP (IronRDP)" },
+              { value: "freerdp", label: "ConnCat FreeRDP" },
               { value: "system", label: "System RDP client" },
             ]}
           />,
-          "Overrides Settings → App Behavior for this Connection. ConneCat release installers include both IronRDP and the FreeRDP compatibility client. System RDP uses the operating system client.",
+          "Overrides Settings → App Behavior for this Connection. ConnCat release installers include both IronRDP and the FreeRDP compatibility client. System RDP uses the operating system client.",
           true,
         )}
         {eff?.rdp && field(
@@ -979,7 +979,7 @@ export default function SessionSettingsPanel({
               { value: "rdp", label: "Standard RDP legacy" },
             ]}
           />,
-          "ConneCat starts with NLA by default and remembers the last security layer that connected successfully. TLS keeps the branded ConneCat viewer; Standard RDP uses the FreeRDP compatibility client.",
+          "ConnCat starts with NLA by default and remembers the last security layer that connected successfully. TLS keeps the branded ConnCat viewer; Standard RDP uses the FreeRDP compatibility client.",
           true,
         )}
         {eff?.rdp && field(
@@ -1020,7 +1020,7 @@ export default function SessionSettingsPanel({
               ...RDP_RESOLUTION_PRESETS.map((preset) => ({ value: preset.value, label: preset.label })),
             ]}
           />,
-          "Sets the remote framebuffer size for ConneCat RDP. Higher resolutions use more memory and bandwidth; the window can still be resized using local scaling.",
+          "Sets the remote framebuffer size for ConnCat RDP. Higher resolutions use more memory and bandwidth; the window can still be resized using local scaling.",
           true,
         )}
         {s.protocol !== "shell" && s.protocol !== "console" && field(
@@ -1043,10 +1043,10 @@ export default function SessionSettingsPanel({
               { value: "", label: `Inherit (${appearance.browseOpenMode === BROWSE_OPEN_EXTERNAL
                 ? "Default OS browser"
                 : appearance.browseOpenMode === BROWSE_OPEN_WINDOW
-                  ? "External ConneCat window"
+                  ? "External ConnCat window"
                   : "In-app browser"})` },
               { value: BROWSE_OPEN_IN_APP, label: "In-app browser" },
-              { value: BROWSE_OPEN_WINDOW, label: "External ConneCat window" },
+              { value: BROWSE_OPEN_WINDOW, label: "External ConnCat window" },
               { value: BROWSE_OPEN_EXTERNAL, label: "Default OS browser" },
             ]}
           />,

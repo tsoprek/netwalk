@@ -1,6 +1,6 @@
-# ConneCat
+# ConnCat
 
-ConneCat is a local-first, standalone desktop workspace for SSH, local shells,
+ConnCat is a local-first, standalone desktop workspace for SSH, local shells,
 serial consoles, RDP, SFTP, command templates, notes, and identities.
 
 It has no enrollment, broker, Lab inventory, server configuration, telemetry,
@@ -57,7 +57,7 @@ the **Windows installer** GitHub Actions workflow instead:
 1. Open the repository's **Actions** tab on GitHub.
 2. Select **Windows installer**, then choose **Run workflow**.
 3. Open the completed workflow run and download the
-   `connecat-windows-msi` artifact.
+   `ConnCat-windows-msi` artifact.
 4. Extract the artifact and run the `.msi` on the Windows computer.
 
 The Windows computer needs the Microsoft Edge WebView2 Runtime, which is

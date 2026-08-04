@@ -102,7 +102,7 @@ afterEach(() => {
 });
 
 describe("direct saved-connection RDP", () => {
-  it("defaults to ConneCat on macOS and Windows, and system elsewhere", () => {
+  it("defaults to ConnCat on macOS and Windows, and system elsewhere", () => {
     expect(effectiveRdpApp({})).toBe("catwalk");
     Object.defineProperty(navigator, "userAgent", { configurable: true, value: "Mozilla/5.0 (Windows NT 10.0)" });
     expect(effectiveRdpApp({})).toBe("catwalk");
@@ -337,7 +337,7 @@ describe("direct saved-connection RDP", () => {
       type: "state",
       sessionId: launch.request.sessionId,
       state: "connected",
-      message: "ConneCat FreeRDP connected",
+      message: "ConnCat FreeRDP connected",
     } }));
     expect(container?.textContent).not.toContain("FreeRDP reconnecting");
 
@@ -386,7 +386,7 @@ describe("direct saved-connection RDP", () => {
     expect(invoke.mock.calls.filter(([command]) => command === "launch_direct_rdp")).toHaveLength(1);
   });
 
-  it("uses the shared ConneCat dialog and buttons for certificate trust", async () => {
+  it("uses the shared ConnCat dialog and buttons for certificate trust", async () => {
     await act(async () => root?.render(<DirectRdpProvider><Harness value={session} /></DirectRdpProvider>));
     await act(async () => eventSink.handler?.({ payload: {
       type: "certificate_challenge",
@@ -568,7 +568,7 @@ describe("direct saved-connection RDP", () => {
       message: "client advertised SSL, but server selected STANDARD_RDP_SECURITY",
     } }));
     expect(container?.textContent).toContain("Legacy RDP security required");
-    const freeRdpButton = [...container!.querySelectorAll("button")].find((button) => button.textContent === "Open with ConneCat FreeRDP");
+    const freeRdpButton = [...container!.querySelectorAll("button")].find((button) => button.textContent === "Open with ConnCat FreeRDP");
     await act(async () => freeRdpButton?.click());
     const legacyInputs = [...container!.querySelectorAll("input")] as HTMLInputElement[];
     await act(async () => setInput(legacyInputs[2], "legacy-password"));

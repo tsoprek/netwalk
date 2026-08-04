@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
   <key>NSAppDataUsageDescription</key>
-  <string>ConneCat uses the 1Password CLI to read the username and password from the Login item you select.</string>
+  <string>ConnCat uses the 1Password CLI to read the username and password from the Login item you select.</string>
 </dict>
 </plist>

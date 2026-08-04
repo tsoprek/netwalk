@@ -37,7 +37,7 @@ export function loadDeploymentHistory(): VmDeploymentRecord[] {
     )).map((item) => deploymentIsActive(item) ? {
       ...item,
       status: "unknown",
-      message: "ConneCat was restarted before the final job status was recorded.",
+      message: "ConnCat was restarted before the final job status was recorded.",
     } : item).slice(0, 10);
   } catch {
     return [];

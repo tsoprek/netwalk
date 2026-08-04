@@ -117,7 +117,7 @@ impl SftpRegistry {
             .handle
             .disconnect(
                 Disconnect::ByApplication,
-                "ConneCat SFTP session closed",
+                "ConnCat SFTP session closed",
                 "en",
             )
             .await;

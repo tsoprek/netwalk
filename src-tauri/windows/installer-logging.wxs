@@ -6,6 +6,6 @@
       account's %TEMP% directory for installs, upgrades, repairs and removals.
     -->
     <Property Id="MsiLogging" Value="voicewarmupx!" />
-    <ComponentGroup Id="ConneCatInstallerLogging" />
+    <ComponentGroup Id="ConnCatInstallerLogging" />
   </Fragment>
 </Wix>

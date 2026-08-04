@@ -56,7 +56,7 @@ describe("default behavior (case 1: current user everywhere)", () => {
     expect(list[0].identity.kind).toBe("current-user");
   });
 
-  it("uses a BookMe VM server default ahead of the current ConneCat user", () => {
+  it("uses a BookMe VM server default ahead of the current ConnCat user", () => {
     expect(getPrimaryUsername("vm-42", "admin", {
       currentUser: "alice",
       serverDefaultUsername: "cloud-user",

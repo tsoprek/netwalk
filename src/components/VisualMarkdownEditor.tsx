@@ -1072,7 +1072,7 @@ const VisualMarkdownEditor = forwardRef<VisualMarkdownEditorHandle, Props>(funct
   const diagnosticIdRef = useRef(`notes-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`);
   const logDiagnostic = (message: string, fields: Record<string, unknown> = {}) => {
     const editor = editorRef.current;
-    diagnosticEvent("core_ui", "debug", "catwalk.notes-editor", message, {
+    diagnosticEvent("core_ui", "debug", "conncat.notes-editor", message, {
       editor_id: diagnosticIdRef.current,
       ...(editor ? notesEditorDiagnosticSnapshot(editor) : {}),
       ...fields,

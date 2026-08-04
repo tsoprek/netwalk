@@ -176,7 +176,7 @@ function detachTerminalWebglAndBackingStores(tab: TerminalTab) {
   tab.webglAddon = null;
   disposeWebglAddonAndContext(addon);
   releaseCanvasBackingStores(canvases, true);
-  diagnosticEvent("ssh_tunnel", "debug", "catwalk.terminal-memory", "Terminal WebGL backing stores released", {
+  diagnosticEvent("ssh_tunnel", "debug", "conncat.terminal-memory", "Terminal WebGL backing stores released", {
     tab_id: tab.id,
     canvas_count: canvases.length,
     backing_pixels: backingPixels,
@@ -194,7 +194,7 @@ function disposeTerminalAndBackingStores(tab: TerminalTab) {
     releaseWebglContext();
     releaseCanvasBackingStores(canvases, true);
   }
-  diagnosticEvent("ssh_tunnel", "debug", "catwalk.terminal-memory", "Terminal canvas backing stores released", {
+  diagnosticEvent("ssh_tunnel", "debug", "conncat.terminal-memory", "Terminal canvas backing stores released", {
     tab_id: tab.id,
     canvas_count: canvases.length,
     backing_pixels: backingPixels,
@@ -331,11 +331,11 @@ interface Ctx {
   /// Move one tab immediately before another in the tab-strip order.
   reorderTab: (draggedId: number, targetId?: number, placement?: "before" | "after") => void;
   open: (opts: SpawnOpts) => Promise<number>;
-  /// Write a ConneCat-owned status line without sending it to the PTY.
+  /// Write a ConnCat-owned status line without sending it to the PTY.
   /// Used by pre-connection tabs while native authentication is pending.
   writeNotice: (id: number, message: string, level?: "info" | "error") => void;
   /// Attach this window to an already-running native PTY. Used when moving
-  /// a live SSH session between ConneCat windows without reconnecting.
+  /// a live SSH session between ConnCat windows without reconnecting.
   adopt: (opts: SpawnOpts, ptyId: number) => Promise<number>;
   close: (id: number) => Promise<void>;
   /// Drop this window's renderer/listeners but leave the native PTY alive.
@@ -490,7 +490,7 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
       terminalRendererPoolRef.current,
       disposePooledTerminalRenderer,
     );
-    diagnosticEvent("ssh_tunnel", "debug", "catwalk.terminal-memory", "DOM terminal renderer pool drained", {
+    diagnosticEvent("ssh_tunnel", "debug", "conncat.terminal-memory", "DOM terminal renderer pool drained", {
       reason,
       live_tab_count: liveTerminalCount,
       pool_limit: rendererPoolLimit(liveTerminalCount),
@@ -527,7 +527,7 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
       try { void tab.host.offsetWidth; } catch { /* noop */ }
       try { tab.host.remove(); } catch { /* noop */ }
       terminalRendererPoolRef.current.push(pooledRendererFromTab(tab));
-      diagnosticEvent("ssh_tunnel", "debug", "catwalk.terminal-memory", "DOM terminal renderer parked for reuse", {
+      diagnosticEvent("ssh_tunnel", "debug", "conncat.terminal-memory", "DOM terminal renderer parked for reuse", {
         tab_id: tab.id,
         live_tab_count: liveTerminalCount,
         pool_size: terminalRendererPoolRef.current.length,
@@ -644,7 +644,7 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
       host.style.width = "100%";
       host.style.height = "100%";
       try { term.resize(initialGrid.cols, initialGrid.rows); } catch { /* fitted after mount */ }
-      diagnosticEvent("ssh_tunnel", "debug", "catwalk.terminal-memory", "DOM terminal renderer reused", {
+      diagnosticEvent("ssh_tunnel", "debug", "conncat.terminal-memory", "DOM terminal renderer reused", {
         live_tab_count: tabsRef.current.length,
         pool_size: terminalRendererPoolRef.current.length,
         pool_limit: poolLimit,
@@ -812,19 +812,19 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
       promptTail = "";
       passwordPromptTailsRef.current.delete(ptyId);
       const encoded = Array.from(UTF8_ENCODER.encode(`${secret}\r`));
-      diagnosticEvent("ssh_tunnel", "info", "catwalk.terminal-auth", "SSH password prompt detected; configured credential submitted", {
+      diagnosticEvent("ssh_tunnel", "info", "conncat.terminal-auth", "SSH password prompt detected; configured credential submitted", {
         pty_id: ptyId,
         authentication_source: opts.authenticationLabel || "configured credential",
       });
       invoke("pty_write", { id: ptyId, data: encoded }).catch((error) => {
-        diagnosticEvent("ssh_tunnel", "error", "catwalk.terminal-auth", "Configured credential submission failed", {
+        diagnosticEvent("ssh_tunnel", "error", "conncat.terminal-auth", "Configured credential submission failed", {
           pty_id: ptyId,
           error: error instanceof Error ? error.message : String(error),
         });
       });
     };
     if (autoPassword) {
-      diagnosticEvent("ssh_tunnel", "debug", "catwalk.terminal-auth", "Automatic password submission armed", {
+      diagnosticEvent("ssh_tunnel", "debug", "conncat.terminal-auth", "Automatic password submission armed", {
         pty_id: ptyId,
         authentication_source: opts.authenticationLabel || "configured credential",
       });
@@ -919,7 +919,7 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
       // the PTY: nested SSH and serial consoles would immediately wrap their
       // output into a handful of columns and corrupt the visible buffer.
       if (!isUsableTerminalGrid(cols, rows)) {
-        diagnosticEvent("ssh_tunnel", "warn", "catwalk.terminal-resize", "Ignored unusable terminal geometry", {
+        diagnosticEvent("ssh_tunnel", "warn", "conncat.terminal-resize", "Ignored unusable terminal geometry", {
           pty_id: ptyId,
           cols,
           rows,
@@ -948,7 +948,7 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
     // preference `terminalRightClickPaste`:
     //   * ON  — paste the system clipboard straight into the pty (default,
     //           matches PuTTY/iTerm behaviour).
-    //   * OFF — open ConneCat's own pane context menu (Copy, Paste, Select
+    //   * OFF — open ConnCat's own pane context menu (Copy, Paste, Select
     //           All, Clear, Insert template…). The native OS menu is
     //           always suppressed so we control the UX consistently.
     // We fire a window-level CustomEvent in OFF mode rather than reach into
@@ -1599,7 +1599,7 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
         }
         passwordRequestRef.current = passwordTab.id;
         emitPasswordShortcutStatus(passwordTab.id, "retrieving", "Retrieving configured credentials…");
-        diagnosticEvent("ssh_tunnel", "debug", "catwalk.terminal-auth", "On-demand password retrieval started", {
+        diagnosticEvent("ssh_tunnel", "debug", "conncat.terminal-auth", "On-demand password retrieval started", {
           pty_id: passwordTab.ptyId,
           authentication_source: passwordTab.spawnOpts.authenticationLabel || "configured credential",
         });
@@ -1617,7 +1617,7 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
               id: current.ptyId,
               data: Array.from(UTF8_ENCODER.encode(`${password}\r`)),
             }).then(() => {
-              diagnosticEvent("ssh_tunnel", "info", "catwalk.terminal-auth", "Configured password submitted on demand", {
+              diagnosticEvent("ssh_tunnel", "info", "conncat.terminal-auth", "Configured password submitted on demand", {
                 pty_id: current.ptyId,
                 authentication_source: current.spawnOpts.authenticationLabel || "configured credential",
               });
@@ -1626,7 +1626,7 @@ export function TerminalsProvider({ children }: { children: ReactNode }) {
           })
           .catch((error) => {
             const message = error instanceof Error ? error.message : String(error);
-            diagnosticEvent("ssh_tunnel", "error", "catwalk.terminal-auth", "On-demand password submission failed", {
+            diagnosticEvent("ssh_tunnel", "error", "conncat.terminal-auth", "On-demand password submission failed", {
               pty_id: passwordTab.ptyId,
               error: message,
             });

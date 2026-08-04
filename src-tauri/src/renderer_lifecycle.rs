@@ -193,7 +193,7 @@ pub fn renderer_lifecycle_reset_main(
     if !is_main_webview_label(invoking_webview.label()) {
         return reject(
             "not_main_webview",
-            "Only the main ConneCat renderer can be reset.",
+            "Only the main ConnCat renderer can be reset.",
         );
     }
     if !valid_route(&request.route) {
@@ -253,7 +253,7 @@ pub fn renderer_lifecycle_reset_main(
                 reset_id = %scheduled_reset_id,
                 %error,
                 fallback = "application_restart",
-                "renderer recreation failed; restarting ConneCat"
+                "renderer recreation failed; restarting ConnCat"
             );
             match recreate_failure_action() {
                 RecreateFailureAction::RestartApplication => app.restart(),

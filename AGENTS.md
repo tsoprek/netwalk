@@ -1,4 +1,4 @@
-# ConneCat standalone parity contract
+# ConnCat standalone parity contract
 
 ## Relationship to production
 
@@ -7,7 +7,7 @@ This repository is the cleaned, standalone edition of the production Catwalk cli
 - `~/new-ce-lab/ce-lab-catwalk/client`
 - This may also be referred to as `~/new-ce-lab/catwalk/client` in requests and older notes.
 
-ConneCat removes broker, enrollment, remote synchronization, and other hosted-only dependencies. It keeps local equivalents where appropriate. Those architectural removals do not authorize a redesign.
+ConnCat removes broker, enrollment, remote synchronization, and other hosted-only dependencies. It keeps local equivalents where appropriate. Those architectural removals do not authorize a redesign.
 
 ## Visual parity is required
 
@@ -21,7 +21,7 @@ Before changing any shared UI:
 4. Treat screenshots as supporting evidence and the production source as the implementation reference.
 5. Compare both clients at the same viewport, color scheme, workspace design, content zoom, and data state.
 
-The intentional product differences are the ConneCat name/logo, standalone status copy, and features that fundamentally require removed hosted services. Preserve production wording and visuals everywhere else unless the request explicitly changes them.
+The intentional product differences are the ConnCat name/logo, standalone status copy, and features that fundamentally require removed hosted services. Preserve production wording and visuals everywhere else unless the request explicitly changes them.
 
 ## Themes
 

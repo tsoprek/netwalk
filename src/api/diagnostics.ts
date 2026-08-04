@@ -61,7 +61,7 @@ export function installFrontendDiagnostics(): () => void {
   };
   window.addEventListener("error", onError);
   window.addEventListener("unhandledrejection", onRejection);
-  diagnosticEvent("core_ui", "info", "webview.lifecycle", "ConneCat webview started", {
+  diagnosticEvent("core_ui", "info", "webview.lifecycle", "ConnCat webview started", {
     user_agent: navigator.userAgent,
   });
   return () => {

@@ -3,7 +3,7 @@ import NotesIcon from "./NotesIcon";
 
 type PasswordInputProps = Omit<ComponentPropsWithoutRef<"input">, "type">;
 
-/** Standard ConneCat password field with an accessible reveal control. */
+/** Standard ConnCat password field with an accessible reveal control. */
 const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(function PasswordInput(
   { className = "", disabled, style, ...props },
   ref,

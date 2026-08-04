@@ -200,6 +200,6 @@ describe("notebook store", () => {
 
   it("rejects malformed backup files", () => {
     expect(() => parseNotebookBackupFile("not json")).toThrow("valid JSON");
-    expect(() => parseNotebookBackupFile(JSON.stringify({ books: [] }))).toThrow("supported ConneCat");
+    expect(() => parseNotebookBackupFile(JSON.stringify({ books: [] }))).toThrow("supported ConnCat");
   });
 });

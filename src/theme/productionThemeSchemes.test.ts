@@ -46,7 +46,7 @@ describe("production theme scheme mirror", () => {
     expect(PRODUCTION_THEME_SCHEME_OVERRIDES["cisco-black-cat-2"]).toBeUndefined();
   });
 
-  it("applies the Ocean Blue palette to the standalone ConneCat alias", () => {
+  it("applies the Ocean Blue palette to the standalone ConnCat alias", () => {
     const appearance = resolveAppearance({
       themeSchemeOverrides: PRODUCTION_THEME_SCHEME_OVERRIDES,
     }, {});

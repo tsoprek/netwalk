@@ -18,9 +18,9 @@ import {
   terminalPopoutOptions,
 } from "../terminals/TerminalsContext";
 import {
-  isConneCatSessionWindow,
-  openConneCatSessionWindow,
-  openInMainConneCat,
+  isConnCatSessionWindow,
+  openConnCatSessionWindow,
+  openInMainConnCat,
 } from "../api/sessionWindow";
 import TerminalsSidebar from "../terminals/TerminalsSidebar";
 import TemplatePicker from "../terminals/TemplatePicker";
@@ -111,7 +111,7 @@ type SessionStatusPopup = {
 };
 
 export default function Terminals() {
-  const sessionWindow = isConneCatSessionWindow();
+  const sessionWindow = isConnCatSessionWindow();
   const {
     tabs,
     activeId,
@@ -603,7 +603,7 @@ export default function Terminals() {
     });
     try {
       const options = await terminalPopoutOptions(tab);
-      await openConneCatSessionWindow(
+      await openConnCatSessionWindow(
         { kind: "terminal", options: options as unknown as Record<string, unknown>, ptyId: tab.ptyId },
         tab.title,
       );
@@ -633,7 +633,7 @@ export default function Terminals() {
     });
     try {
       const options = await Promise.all(members.map((tab) => terminalPopoutOptions(tab)));
-      await openConneCatSessionWindow(
+      await openConnCatSessionWindow(
         {
           kind: "terminal_group",
           options: options as unknown as Record<string, unknown>[],
@@ -906,8 +906,8 @@ export default function Terminals() {
             e.stopPropagation();
             void popOutTerminal(t);
           }}
-          title={popoutPendingIds.size > 0 ? "Opening session window…" : "Open in external ConneCat window"}
-          aria-label={`Open ${t.title} in external ConneCat window`}
+          title={popoutPendingIds.size > 0 ? "Opening session window…" : "Open in external ConnCat window"}
+          aria-label={`Open ${t.title} in external ConnCat window`}
         ><NotesIcon name="detach-window" size={14} /></SessionAccentButton>
         <button
           className="terminals-tab-close terminals-close-btn"
@@ -954,11 +954,11 @@ export default function Terminals() {
             items={[
               { label: "New local shell", onClick: newLocalShell },
               { divider: true },
-              { label: sessionWindow ? "Open Connections in main ConneCat" : "Go to Connections", onClick: () => sessionWindow ? void openInMainConneCat("/connections") : navigate("/connections") },
-              { label: sessionWindow ? "Open Templates in main ConneCat" : "Go to Templates", onClick: () => sessionWindow ? void openInMainConneCat("/templates") : navigate("/templates") },
-              { label: sessionWindow ? "Open Notes in main ConneCat" : "Go to Notes", onClick: () => sessionWindow ? void openInMainConneCat("/notes") : navigate("/notes") },
+              { label: sessionWindow ? "Open Connections in main ConnCat" : "Go to Connections", onClick: () => sessionWindow ? void openInMainConnCat("/connections") : navigate("/connections") },
+              { label: sessionWindow ? "Open Templates in main ConnCat" : "Go to Templates", onClick: () => sessionWindow ? void openInMainConnCat("/templates") : navigate("/templates") },
+              { label: sessionWindow ? "Open Notes in main ConnCat" : "Go to Notes", onClick: () => sessionWindow ? void openInMainConnCat("/notes") : navigate("/notes") },
               { divider: true },
-              { label: sessionWindow ? "Open Settings in main ConneCat" : "Settings", onClick: () => sessionWindow ? void openInMainConneCat("/settings") : navigate("/settings") },
+              { label: sessionWindow ? "Open Settings in main ConnCat" : "Settings", onClick: () => sessionWindow ? void openInMainConnCat("/settings") : navigate("/settings") },
             ]}
             onClose={() => setEmptyMenuPos(null)}
           />
@@ -988,7 +988,7 @@ export default function Terminals() {
       )}
       {popoutError && (
         <div style={{ color: "var(--danger, #ff6b6b)", fontSize: "0.85rem", padding: "4px 8px" }}>
-          Could not open ConneCat session window: {popoutError}
+          Could not open ConnCat session window: {popoutError}
         </div>
       )}
       <div
@@ -1100,8 +1100,8 @@ export default function Terminals() {
                   }}
                   title={popoutPendingIds.size > 0
                     ? `Opening group ${name}…`
-                    : `Open group ${name} in external ConneCat window`}
-                  aria-label={`Open group ${name} in external ConneCat window`}
+                    : `Open group ${name} in external ConnCat window`}
+                  aria-label={`Open group ${name} in external ConnCat window`}
                 >
                   <NotesIcon name="detach-window" size={15} />
                 </SessionAccentButton>
@@ -1221,8 +1221,8 @@ export default function Terminals() {
             : [
                 { label: "No Books with Sections", disabled: true },
                 {
-                  label: sessionWindow ? "Open Notes in main ConneCat" : "Open Notes page",
-                  onClick: () => sessionWindow ? void openInMainConneCat("/notebooks") : navigate("/notebooks"),
+                  label: sessionWindow ? "Open Notes in main ConnCat" : "Open Notes page",
+                  onClick: () => sessionWindow ? void openInMainConnCat("/notebooks") : navigate("/notebooks"),
                 },
               ]}
           onClose={() => setNotesMenuPos(null)}
@@ -1339,7 +1339,7 @@ export default function Terminals() {
           items.push({ label: "      Grid", onClick: () => arrangeGroup(g, "grid") });
           items.push({ divider: true });
           items.push({
-            label: "Open group in external ConneCat window",
+            label: "Open group in external ConnCat window",
             disabled: popoutPendingIds.size > 0,
             onClick: () => { void popOutGroup(g); },
           });
@@ -1540,7 +1540,7 @@ export default function Terminals() {
               })),
             })),
           onClick: notebookTargets.length === 0
-            ? () => sessionWindow ? void openInMainConneCat("/notebooks") : navigate("/notebooks")
+            ? () => sessionWindow ? void openInMainConnCat("/notebooks") : navigate("/notebooks")
             : undefined,
         });
         // Templates submenu — mirrors the tab-strip menu so the user
@@ -1557,16 +1557,16 @@ export default function Terminals() {
         if (templates) items.push({ divider: true }, templates);
         items.push({ divider: true });
         items.push({
-          label: sessionWindow ? "Open Templates in main ConneCat" : "Open Templates page",
-          onClick: () => sessionWindow ? void openInMainConneCat("/templates") : navigate("/templates"),
+          label: sessionWindow ? "Open Templates in main ConnCat" : "Open Templates page",
+          onClick: () => sessionWindow ? void openInMainConnCat("/templates") : navigate("/templates"),
         });
         items.push({
-          label: sessionWindow ? "Open Notes in main ConneCat" : "Open Notes page",
-          onClick: () => sessionWindow ? void openInMainConneCat("/notebooks") : navigate("/notebooks"),
+          label: sessionWindow ? "Open Notes in main ConnCat" : "Open Notes page",
+          onClick: () => sessionWindow ? void openInMainConnCat("/notebooks") : navigate("/notebooks"),
         });
         items.push({
-          label: sessionWindow ? "Open Settings in main ConneCat" : "Settings\u2026",
-          onClick: () => sessionWindow ? void openInMainConneCat("/settings") : navigate("/settings"),
+          label: sessionWindow ? "Open Settings in main ConnCat" : "Settings\u2026",
+          onClick: () => sessionWindow ? void openInMainConnCat("/settings") : navigate("/settings"),
         });
         return (
           <ContextMenu
@@ -2369,7 +2369,7 @@ function detachWebglAddon(tab: TerminalTab, refreshFallback = true) {
   disposeWebglAddonAndContext(tab.webglAddon);
   tab.webglAddon = null;
   releaseCanvasBackingStores(canvases, true);
-  diagnosticEvent("ssh_tunnel", "debug", "catwalk.terminal-memory", "Inactive terminal WebGL backing stores released", {
+  diagnosticEvent("ssh_tunnel", "debug", "conncat.terminal-memory", "Inactive terminal WebGL backing stores released", {
     tab_id: tab.id,
     canvas_count: canvases.length,
     backing_pixels: backingPixels,

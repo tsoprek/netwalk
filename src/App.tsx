@@ -96,7 +96,7 @@ function Shell() {
   const [windowMaximized, setWindowMaximized] = useState(false);
 
   useEffect(() => {
-    document.title = "ConneCat";
+    document.title = "ConnCat";
   }, []);
 
   useEffect(() => {
@@ -120,7 +120,7 @@ function Shell() {
     }).then((menu) => {
       if (cancelled) void menu.close();
     }).catch((error) => {
-      console.warn("Could not install ConneCat native application menu", error);
+      console.warn("Could not install ConnCat native application menu", error);
     });
 
     return () => {
@@ -259,7 +259,7 @@ function Shell() {
           <span className="standalone-brand-mark" aria-hidden="true">
             <StandaloneTopbarIcon name="brand" size={31} />
           </span>
-          <span className="brand">ConneCat</span>
+          <span className="brand">ConnCat</span>
           <span className="standalone-badge">Standalone</span>
         </div>
         <nav ref={navLeftRef} className="nav-left">

@@ -33,7 +33,7 @@ export interface BrandConfig {
   /// Optional identifier of the brand preset (used to hook brand-specific CSS
   /// via the `[data-brand="..."]` selector on `<html>`). Free-form string.
   id?: string;
-  /// Controls whether a locally selected theme uses ConneCat's built-in
+  /// Controls whether a locally selected theme uses ConnCat's built-in
   /// identity or the selected custom preset's name/logo. This prevents a
   /// site-default custom logo from leaking into built-in themes.
   identity?: "default" | "custom";
@@ -194,7 +194,7 @@ export interface AppearanceConfig {
   pageTitleColor?: PageTitleColor;
   pageTitleCustomColor?: string;
   pageTitleStyle?: PageTitleStyle;
-  /// Shared visual hierarchy used across every main ConneCat workspace.
+  /// Shared visual hierarchy used across every main ConnCat workspace.
   /// Quiet reduces chrome, Structured emphasizes pane boundaries, and
   /// Command Center uses denser operational bands. Default: Command Center.
   workspaceDesign?: WorkspaceDesign;
@@ -205,19 +205,19 @@ export interface AppearanceConfig {
   sessionConnectionIconStyle?: IconPresentationStyle;
   /// Presentation for general action icons in buttons, menus, and toolbars.
   buttonIconStyle?: IconPresentationStyle;
-  /// Hover/focus animation applied to interactive icons throughout ConneCat.
+  /// Hover/focus animation applied to interactive icons throughout ConnCat.
   /// Theme default preserves the original GoT frost/burning behavior and is
   /// intentionally motion-free for other themes.
   iconEffect?: IconEffect;
   /// Whether the active primary/utility navigation icon retains the selected
   /// icon effect after hover ends. Default: true.
   keepActiveNavigationIconEffect?: boolean;
-  /// Presentation for shared OFF/ON switch buttons throughout ConneCat.
+  /// Presentation for shared OFF/ON switch buttons throughout ConnCat.
   switchButtonStyle?: SwitchButtonStyle;
   /// Whether inline VM power controls are visible on Lab rows/cards. Power
   /// commands remain available from the device context menu. Default: true.
   showVmPowerControls?: boolean;
-  /// Where Browse actions open after ConneCat creates the secure local proxy.
+  /// Where Browse actions open after ConnCat creates the secure local proxy.
   /// Default: in_app. Per-device/per-connection settings may override it.
   browseOpenMode?: BrowseOpenMode;
   /// Default launcher for RDP actions on saved Connections. Individual
@@ -374,7 +374,7 @@ export const DEFAULTS: Required<{
   brand: {
     id: "connecat",
     identity: "default",
-    name: "ConneCat",
+    name: "ConnCat",
     logoUrl: "/connecat.png",
     accent: "#049fd9",
     window: {
@@ -424,7 +424,7 @@ function migrateRemovedThemeBrand(brand: BrandConfig | undefined): BrandConfig |
   return {
     id: "cisco",
     identity: "default",
-    name: "ConneCat",
+    name: "ConnCat",
     logoUrl: "",
     accent: "#049fd9",
   };

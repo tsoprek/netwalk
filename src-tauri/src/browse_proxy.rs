@@ -27,7 +27,7 @@ const IDLE_TIMEOUT: Duration = Duration::from_secs(10 * 60);
 const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
 const MAX_HEADER_BYTES: usize = 128 * 1024;
 const MAX_BODY_BYTES: usize = 64 * 1024 * 1024;
-const DIAGNOSTIC_TARGET: &str = "catwalk_client::browse_proxy";
+const DIAGNOSTIC_TARGET: &str = "conncat_client::browse_proxy";
 static NEXT_PROXY_ID: AtomicU64 = AtomicU64::new(1);
 static NEXT_CONNECTION_ID: AtomicU64 = AtomicU64::new(1);
 
@@ -1045,7 +1045,7 @@ fn should_skip_response_header(name: &str) -> bool {
             | "content-length"
             // Alternate-service routes describe the appliance origin. If
             // exposed on loopback, an external browser can try to bypass the
-            // ConneCat proxy (most commonly via HTTP/3).
+            // ConnCat proxy (most commonly via HTTP/3).
             | "alt-svc"
             // Appliance UIs commonly ship headers that are correct on the
             // device origin but break after we re-serve the page from local

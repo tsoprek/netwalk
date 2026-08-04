@@ -2,7 +2,7 @@ import type { ThemeSchemeOverride } from "../api/appearance";
 
 // Light / Medium / Dark window palettes derived from the production Catwalk
 // configuration, with standalone-safe display names and only the themes that
-// ConneCat exposes.
+// ConnCat exposes.
 const PRODUCTION_OVERRIDES: Record<string, ThemeSchemeOverride> = {
       "cisco": {
         "defaultScheme": "medium",

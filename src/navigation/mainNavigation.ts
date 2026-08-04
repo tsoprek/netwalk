@@ -34,7 +34,7 @@ function pathMatchesSection(pathname: string, section: string): boolean {
   return pathname === section || pathname.startsWith(`${section}/`);
 }
 
-/** Return the adjacent main ConneCat view, wrapping at either end. */
+/** Return the adjacent main ConnCat view, wrapping at either end. */
 export function cycleMainNavigationPath(pathname: string, backwards: boolean): string {
   const currentIndex = MAIN_NAVIGATION_PATHS.findIndex((section) =>
     pathMatchesSection(pathname, section),

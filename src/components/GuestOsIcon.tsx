@@ -1,4 +1,4 @@
-/// Compact device-type / guest-OS icon for ConneCat's list and focus views.
+/// Compact device-type / guest-OS icon for ConnCat's list and focus views.
 /// Resolves the icon in this priority order:
 ///   1. `deviceType` (HW/CML): cisco_router, cisco_switch, cisco_firewall,
 ///      linux_ubuntu, linux_rocky, linux_rhel, linux_debian, linux_alpine,

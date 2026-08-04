@@ -165,7 +165,7 @@ export function RendererLifecycleProvider({ children }: { children: ReactNode })
       dialogOpen: openApplicationDialog(),
     });
     if (frontendBlockers.length > 0) {
-      return rejected(resetId, frontendBlockers, "Renderer memory cannot be reclaimed while ConneCat has active work.");
+      return rejected(resetId, frontendBlockers, "Renderer memory cannot be reclaimed while ConnCat has active work.");
     }
 
     let nativeStatus: RendererLifecycleStatus;

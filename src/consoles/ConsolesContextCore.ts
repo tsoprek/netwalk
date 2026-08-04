@@ -80,7 +80,7 @@ export interface ConsoleTab {
   /// the Remote Access page unmounts. Native sessions show/hide their child
   /// webview; CML switches between the canvas and DOM xterm renderers.
   setVisible?: (visible: boolean) => void | Promise<void>;
-  /// Tell an embedded ConneCat engine which visible shell owns its drop area.
+  /// Tell an embedded ConnCat engine which visible shell owns its drop area.
   /// Tauri's current-window label remains stale after WebView reparenting.
   setDropTargetShell?: (shellId: string | null) => void;
   /// Reserve space on the right for application-shell popovers such as Help
@@ -123,7 +123,7 @@ export interface ConsolesContextValue {
     autoConnect?: boolean;
     title: string;
   }) => number;
-  /// Adopt an already-running browser webview into this ConneCat window.
+  /// Adopt an already-running browser webview into this ConnCat window.
   /// The page, cookies, JavaScript state, and authenticated session survive.
   adoptBrowser: (webviewLabel: string, url: string, label?: string) => Promise<number>;
   adoptEngine: (webviewLabel: string, launch: import("../api/sessionWindow").SessionWindowLaunch) => Promise<number>;

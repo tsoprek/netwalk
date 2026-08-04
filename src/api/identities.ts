@@ -3,7 +3,7 @@
 //! Three concepts: Identity (a known username), Scope (what an assignment
 //! attaches to), Assignment (ordered identities for a scope). A `current-
 //! user` identity is built-in, non-deletable, and resolves at connect time
-//! to the logged-in ConneCat user (`getUsername()`).
+//! to the logged-in ConnCat user (`getUsername()`).
 //!
 //! Phase 0 deliverables:
 //!   - Types + localStorage layer.
@@ -117,7 +117,7 @@ function builtInCurrentUser(): Identity {
     kind: "current-user",
     source: "manual",
     createdAt: 0,
-    label: "Current ConneCat user",
+    label: "Current ConnCat user",
   };
 }
 
@@ -346,7 +346,7 @@ export function getSessionAssignment(sessionId: string): Assignment | null {
  * Connection-specific and global identity assignments are resolved at launch
  * time so identity edits take effect without rewriting every saved
  * Connection. An existing SavedSession username remains the compatibility
- * fallback; the current ConneCat user is used only when no saved username or
+ * fallback; the current ConnCat user is used only when no saved username or
  * usable assignment exists. */
 export function getSessionPrimaryUsername(
   sessionId: string,

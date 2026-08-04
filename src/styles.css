@@ -809,7 +809,7 @@ input, select {
     box-shadow 120ms ease;
 }
 
-/* Keep editable fields inside the ConneCat theme instead of exposing the
+/* Keep editable fields inside the ConnCat theme instead of exposing the
    WebView's native blue focus frame and platform-specific search glyphs. */
 input:not([type]),
 input[type="text"],
@@ -859,7 +859,7 @@ textarea {
 }
 
 /* Numeric fields keep their native numeric keyboard, min/max, and step
-   validation, but use the same clean ConneCat input surface as text fields.
+   validation, but use the same clean ConnCat input surface as text fields.
    WebKit exposes the stepper as separate pseudo-elements even when the
    parent input has appearance:none, so suppress both controls explicitly. */
 input[type="number"] {
@@ -1132,7 +1132,7 @@ div.row > a {
   min-width: 0;
   box-sizing: border-box;
 }
-/* WebView2 adds its own password-reveal affordance on Windows. ConneCat
+/* WebView2 adds its own password-reveal affordance on Windows. ConnCat
    supplies the accessible toggle below, so hide the native duplicate. */
 .password-input__field::-ms-reveal,
 .password-input__field::-ms-clear {
@@ -3743,7 +3743,7 @@ main:has(.terminals-shell) { padding: 0; overflow: hidden; }
   }
 }
 
-/* ---------- ConneCat brand: clean deep blue ---------- */
+/* ---------- ConnCat brand: clean deep blue ---------- */
 :root[data-brand="connecat"] .brand,
 :root[data-brand="cisco"] .brand {
   border-bottom: 2px solid var(--accent);
@@ -4988,7 +4988,7 @@ main:has(.templates-page) { padding: 0; overflow: hidden; }
 }
 
 /* App-rendered select menus. Native <select> popovers use macOS styling and
-   cannot inherit ConneCat theme variables, so notebook controls use these. */
+   cannot inherit ConnCat theme variables, so notebook controls use these. */
 .themed-select {
   position: relative;
   min-width: 0;
@@ -7993,7 +7993,7 @@ svg[data-icon-presentation="duotone"] {
 }
 
 /* Enrollment is a full-page surface, but intentionally reuses the current
-   ConneCat dialog header, content, and action language. */
+   ConnCat dialog header, content, and action language. */
 .enroll-page {
   display: grid;
   place-items: start center;
@@ -12118,7 +12118,7 @@ button.workspace-connection-row__address:is(:hover, :focus-visible) {
     flex-direction: column;
   }
 }
-/* ConneCat standalone local-library screens. */
+/* ConnCat standalone local-library screens. */
 .notebooks-layout { display: grid; grid-template-columns: minmax(150px,.7fr) minmax(180px,.8fr) minmax(200px,1fr) minmax(300px,2fr); min-height: 560px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--surface); }
 .notebooks-layout > * { min-width: 0; padding: 12px; border-right: 1px solid var(--border); }
 .notebooks-layout > *:last-child { border-right: 0; }

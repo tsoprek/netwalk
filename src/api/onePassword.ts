@@ -47,7 +47,7 @@ export function hasOnePasswordCredential(value: { onePassword?: OnePasswordCrede
 export function onePasswordErrorMessage(error: unknown): string {
   if (error instanceof Error && error.message.trim()) return error.message;
   if (typeof error === "string" && error.trim()) return error.trim();
-  return "1Password request failed. Check ConneCat diagnostics for details.";
+  return "1Password request failed. Check ConnCat diagnostics for details.";
 }
 
 function deviceCredentialKey(deviceId: string | number): string {

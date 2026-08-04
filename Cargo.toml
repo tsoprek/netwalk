@@ -6,7 +6,7 @@ members = ["src-tauri"]
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-authors = ["ConneCat contributors"]
+authors = ["ConnCat contributors"]
 
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }

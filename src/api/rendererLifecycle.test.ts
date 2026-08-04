@@ -74,7 +74,7 @@ describe("renderer lifecycle handoff", () => {
     expect(consumeRestoredRendererHandoff()?.scrollY).toBe(200);
   });
 
-  it("captures the ConneCat content viewport scroll position", () => {
+  it("captures the ConnCat content viewport scroll position", () => {
     history.replaceState({}, "", "/settings");
     const app = document.createElement("div");
     app.className = "app";

@@ -57,7 +57,7 @@ import {
   urlHost,
 } from "../api/standalone";
 import { useTerminals } from "../terminals/TerminalsContext";
-import { openConneCatBrowserWindow } from "../api/browserWindow";
+import { openConnCatBrowserWindow } from "../api/browserWindow";
 import { useConsoles } from "../consoles/useConsoles";
 import { useAppearance } from "../appearance/AppearanceContext";
 import { useViewMode } from "../appearance/ViewModeContext";
@@ -259,7 +259,7 @@ export default function Sessions() {
   }, []);
 
   async function pushProfile() {
-    // ConneCat connections are local-only. Keep this function as the existing
+    // ConnCat connections are local-only. Keep this function as the existing
     // save call-site boundary so edits remain synchronous and easy to audit.
   }
 
@@ -666,7 +666,7 @@ export default function Sessions() {
       if (browseMode === BROWSE_OPEN_EXTERNAL) {
         await openUrl(proxy.url);
       } else if (browseMode === BROWSE_OPEN_WINDOW) {
-        await openConneCatBrowserWindow(proxy.url, `${s.name || s.host} :${port}`);
+        await openConnCatBrowserWindow(proxy.url, `${s.name || s.host} :${port}`);
       } else {
         openBrowserTab(proxy.url, `${s.name || s.host} :${port}`);
         navigate("/consoles");
