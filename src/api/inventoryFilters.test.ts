@@ -9,11 +9,11 @@ import {
 describe("inventory filters", () => {
   it("classifies CML and VMs before their OS or node definition", () => {
     expect(classifyInventoryType({ isCml: true, isVirtual: true, descriptors: ["iosv"] })).toBe("cml");
-    expect(classifyInventoryType({ isVirtual: true, descriptors: ["cisco_router"] })).toBe("vm");
+    expect(classifyInventoryType({ isVirtual: true, descriptors: ["network_router"] })).toBe("vm");
   });
 
   it("classifies physical switches and routers", () => {
-    expect(classifyInventoryType({ descriptors: ["cisco_switch"] })).toBe("switch");
+    expect(classifyInventoryType({ descriptors: ["network_switch"] })).toBe("switch");
     expect(classifyInventoryType({ descriptors: ["c8000v router"] })).toBe("router");
     expect(classifyInventoryType({ descriptors: ["appliance"] })).toBe("hardware");
     expect(matchesInventoryType("hardware", "switch")).toBe(true);
@@ -21,7 +21,7 @@ describe("inventory filters", () => {
   });
 
   it("normalizes common OS and network operating-system names", () => {
-    expect(detectInventoryOs("Cisco IOS-XE 17")?.value).toBe("ios");
+    expect(detectInventoryOs("IOS-XE 17")?.value).toBe("ios");
     expect(detectInventoryOs("iox")?.label).toBe("IOS / IOS-XE");
     expect(detectInventoryOs("Red Hat Enterprise Linux 9")?.value).toBe("rhel");
     expect(detectInventoryOs("Ubuntu Linux (64-bit)")?.value).toBe("ubuntu");

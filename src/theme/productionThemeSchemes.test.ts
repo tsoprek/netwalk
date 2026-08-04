@@ -3,7 +3,7 @@ import { resolveAppearance } from "../api/appearance";
 import { PRODUCTION_THEME_SCHEME_OVERRIDES } from "./productionThemeSchemes";
 
 const PRODUCTION_THEME_IDS = [
-  "cisco",
+  "ocean-blue",
   "got",
   "got-arryn",
   "got-baratheon",
@@ -16,7 +16,7 @@ const PRODUCTION_THEME_IDS = [
   "got-tyrell",
   "pride",
   "squid",
-  "thousandeyes-steel",
+  "steel-horizon",
 ] as const;
 
 describe("production theme scheme mirror", () => {
@@ -39,11 +39,9 @@ describe("production theme scheme mirror", () => {
     }
   });
 
-  it("uses standalone display names and omits deleted Black Cat themes", () => {
-    expect(PRODUCTION_THEME_SCHEME_OVERRIDES.cisco.label).toBe("Ocean Blue");
-    expect(PRODUCTION_THEME_SCHEME_OVERRIDES["thousandeyes-steel"].label).toBe("Steel Horizon");
-    expect(PRODUCTION_THEME_SCHEME_OVERRIDES["cisco-black-cat"]).toBeUndefined();
-    expect(PRODUCTION_THEME_SCHEME_OVERRIDES["cisco-black-cat-2"]).toBeUndefined();
+  it("uses standalone display names", () => {
+    expect(PRODUCTION_THEME_SCHEME_OVERRIDES["ocean-blue"].label).toBe("Ocean Blue");
+    expect(PRODUCTION_THEME_SCHEME_OVERRIDES["steel-horizon"].label).toBe("Steel Horizon");
   });
 
   it("applies the Ocean Blue palette to the standalone ConnCat alias", () => {

@@ -161,7 +161,7 @@ const TERMINAL_PRESETS: { id: string; label: string; theme: Record<string, strin
   },
   {
     // Deep navy palette with a warm copper cursor and accent.
-    id: "thousandeyes",
+    id: "midnight-copper",
     label: "Midnight Copper",
     theme: {
       background: "#222e45",
@@ -189,7 +189,7 @@ const TERMINAL_PRESETS: { id: string; label: string; theme: Record<string, strin
   {
     // Lighter steel-blue variant of the company palette. Still a deep blue,
     // just less inky than Navy. Same orange accent.
-    id: "thousandeyes-steel",
+    id: "steel-horizon",
     label: "Steel Horizon",
     theme: {
       background: "#324a6b",
@@ -273,7 +273,7 @@ const TERMINAL_PRESETS: { id: string; label: string; theme: Record<string, strin
   },
   {
     // Ocean Blue: deep navy background with a clear blue cursor and accents.
-    id: "cisco",
+    id: "ocean-blue",
     label: "Ocean Blue",
     theme: {
       background: "#00253d",
@@ -766,11 +766,11 @@ const BRAND_PRESETS: {
   };
 }[] = [
     {
-      id: "thousandeyes",
+      id: "midnight-copper",
       label: "Midnight Copper",
       accent: "#fb7c32",
       colorScheme: "dark",
-      terminalPresetId: "thousandeyes",
+      terminalPresetId: "midnight-copper",
       window: {
         bg: "#1a2336",
         panel: "#222e45",
@@ -782,11 +782,11 @@ const BRAND_PRESETS: {
       },
     },
     {
-      id: "thousandeyes-steel",
+      id: "steel-horizon",
       label: "Steel Horizon",
       accent: "#fb7c32",
       colorScheme: "dark",
-      terminalPresetId: "thousandeyes-steel",
+      terminalPresetId: "steel-horizon",
       window: {
         bg: "#2a3e5c",
         panel: "#324a6b",
@@ -832,11 +832,11 @@ const BRAND_PRESETS: {
       },
     },
     {
-      id: "cisco",
+      id: "ocean-blue",
       label: "Ocean Blue",
       accent: "#049fd9",
       colorScheme: "medium",
-      terminalPresetId: "cisco",
+      terminalPresetId: "ocean-blue",
       window: {
         bg: "#00253d",
         panel: "#003459",
@@ -854,7 +854,7 @@ const BRAND_PRESETS: {
       brandName: "ConnCat",
       logoUrl: "/connecat.png",
       colorScheme: "dark",
-      terminalPresetId: "cisco",
+      terminalPresetId: "ocean-blue",
       window: {
         bg: "#00253d",
         panel: "#003459",
@@ -1093,10 +1093,7 @@ type WindowPrefs = NonNullable<NonNullable<AppearanceConfig["brand"]>["window"]>
 const LEGACY_SPLIT_THEME_PRESET_IDS = new Set([
   "game-of-thrones-medium", "game-of-thrones-dark",
   "pride-medium", "pride-dark",
-  "cisco-medium", "cisco-dark",
-  "cisco-black-cat-medium", "cisco-black-cat-dark",
   "squid-game-medium", "squid-game-dark",
-  "thousandeyes-steel-medium", "thousandeyes-steel-dark",
 ]);
 
 export default function Settings() {

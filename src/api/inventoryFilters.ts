@@ -9,7 +9,7 @@ export interface InventoryOsOption {
 const OS_LABELS: Record<string, string> = {
   ios: "IOS / IOS-XE",
   nxos: "NX-OS",
-  sdwan: "Cisco SD-WAN",
+  sdwan: "SD-WAN",
   rhel: "RHEL",
   rocky: "Rocky Linux",
   ubuntu: "Ubuntu",
@@ -46,11 +46,11 @@ export function classifyInventoryType({
   const text = normalizedText(descriptors);
   if (
     /(^|[\s-])(switch|iosvl2|iol-l2|nxos|nx-os|cat9kv|cat9000v)([\s-]|$)/.test(text)
-    || text.includes("cisco-switch")
+    || text.includes("network-switch")
   ) return "switch";
   if (
     /(^|[\s-])(router|iosv|iosxe|ios-xe|iosxr|ios-xr|csr1000v|c8000v|cat8000v|iol)([\s-]|$)/.test(text)
-    || text.includes("cisco-router")
+    || text.includes("network-router")
   ) return "router";
   return "hardware";
 }
@@ -69,12 +69,12 @@ export function detectInventoryOs(...values: Array<string | null | undefined>): 
 
   let value: string | null = null;
   if (/(^|[\s-])teva(?=$|[\s-]|\d)/.test(text)) value = "ubuntu";
-  else if (/\b(cat-sdwan|sd-wan|sdwan)\b/.test(text) || text.includes("cisco-sdwan")) value = "sdwan";
-  else if (/\b(nxos|nx-os|nxosv)\b/.test(text) || text.includes("cisco-nxos")) value = "nxos";
+  else if (/\b(cat-sdwan|sd-wan|sdwan)\b/.test(text) || text.includes("network-sdwan")) value = "sdwan";
+  else if (/\b(nxos|nx-os|nxosv)\b/.test(text) || text.includes("network-nxos")) value = "nxos";
   else if (
     /\b(ios|iox|iosv|iosvl2|iosxe|ios-xe|iosxr|ios-xr|csr1000v|c8000v|cat8000v|iol)\b/.test(text)
-    || text.includes("cisco-router")
-    || text.includes("cisco-switch")
+    || text.includes("network-router")
+    || text.includes("network-switch")
   ) value = "ios";
   else if (/(^|[\s-])ubuntu(?=$|[\s-]|\d)/.test(text)) value = "ubuntu";
   else if (/(^|[\s-])rocky(?:-linux)?(?=$|[\s-]|\d)/.test(text)) value = "rocky";

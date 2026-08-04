@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { hasSshPasswordPrompt } from "./authenticationPrompt";
 
 describe("hasSshPasswordPrompt", () => {
-  it("detects Cisco and OpenSSH password prompts", () => {
+  it("detects common SSH password prompts", () => {
     expect(hasSshPasswordPrompt("Password: ")).toBe(true);
     expect(hasSshPasswordPrompt("admin@router's password: ")).toBe(true);
     expect(hasSshPasswordPrompt("Password for lab-user:\r")).toBe(true);

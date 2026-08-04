@@ -6,48 +6,10 @@ import {
   getEffectiveAccent,
   getEffectiveTerminalAnsiAccent,
   getScheduledThemePeriod,
-  migrateRemovedThemePrefs,
   resolveAppearance,
 } from "./appearance";
 
 describe("appearance terminal ANSI accent", () => {
-  it("migrates deleted Black Cat themes and scheduled targets to Ocean Blue", () => {
-    const migrated = migrateRemovedThemePrefs({
-      brand: {
-        id: "cisco-black-cat-2",
-        identity: "default",
-        name: "Cisco Black Cat 2",
-        accent: "#e2c800",
-        window: { bg: "#193e62" },
-      },
-      themeSchedule: {
-        enabled: true,
-        dayStart: "08:00",
-        nightStart: "20:00",
-        day: {
-          themeValue: "builtin:cisco-black-cat",
-          colorScheme: "medium",
-          brand: { id: "cisco-black-cat", accent: "#e2c800" },
-        },
-        night: {
-          themeValue: "builtin:got",
-          colorScheme: "dark",
-          brand: { id: "got", accent: "#c8102e" },
-        },
-      },
-    });
-
-    expect(migrated.brand).toEqual({
-      id: "cisco",
-      identity: "default",
-      name: "ConnCat",
-      logoUrl: "",
-      accent: "#049fd9",
-    });
-    expect(migrated.themeSchedule?.day.themeValue).toBe("builtin:cisco");
-    expect(migrated.themeSchedule?.day.brand.id).toBe("cisco");
-    expect(migrated.themeSchedule?.night.themeValue).toBe("builtin:got");
-  });
   it("defaults the terminal renderer to Auto and accepts valid overrides", () => {
     expect(resolveAppearance({}, {}).terminalRenderer).toBe("auto");
     expect(resolveAppearance({}, { terminalRenderer: "dom" }).terminalRenderer).toBe("dom");
@@ -508,7 +470,7 @@ describe("appearance brand identity isolation", () => {
             border: "#004d7a",
             inputBg: "#00304f",
             btnFg: "#ffffff",
-            backgroundImagePath: "/tmp/cisco-light.png",
+            backgroundImagePath: "/tmp/ocean-blue-light.png",
             backgroundImageOpacity: 0.2,
           } as any,
         },

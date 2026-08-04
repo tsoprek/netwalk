@@ -1,6 +1,6 @@
 /// Compact device-type / guest-OS icon for ConnCat's list and focus views.
 /// Resolves the icon in this priority order:
-///   1. `deviceType` (HW/CML): cisco_router, cisco_switch, cisco_firewall,
+///   1. `deviceType` (HW/CML): network_router, network_switch, network_firewall,
 ///      linux_ubuntu, linux_rocky, linux_rhel, linux_debian, linux_alpine,
 ///      linux_generic, windows_server, iosv, iosvl2, nxosv, asav, …
 ///   2. `fullName` (VM guest_os_full_name): substring match for ubuntu /
@@ -35,14 +35,13 @@ interface Kind {
 const PRIMARY_BLUE = "#1976d2";
 
 /// Selectable values for the user-facing "Type / OS icon" override.
-/// Mirrors the canonical list in ce-lab-frontend's `DeviceIcon.js` so the
-/// two surfaces share the same vocabulary. `value: ""` means "auto-detect".
+/// `value: ""` means "auto-detect".
 export const DEVICE_TYPE_OPTIONS: { value: string; label: string }[] = [
-  { value: "cisco_router", label: "Cisco router" },
-  { value: "cisco_switch", label: "Cisco switch" },
-  { value: "cisco_firewall", label: "Cisco firewall (ASA/FTD)" },
-  { value: "cisco_nxos", label: "Cisco Nexus (NX-OS)" },
-  { value: "cisco_sdwan", label: "Cisco SD-WAN" },
+  { value: "network_router", label: "Router" },
+  { value: "network_switch", label: "Switch" },
+  { value: "network_firewall", label: "Firewall (ASA/FTD)" },
+  { value: "network_nxos", label: "Nexus (NX-OS)" },
+  { value: "network_sdwan", label: "SD-WAN" },
   { value: "linux_ubuntu", label: "Linux \u2014 Ubuntu" },
   { value: "linux_rocky", label: "Linux \u2014 Rocky" },
   { value: "linux_rhel", label: "Linux \u2014 RHEL / CentOS" },
@@ -55,13 +54,13 @@ export const DEVICE_TYPE_OPTIONS: { value: string; label: string }[] = [
 function classify(family?: string | null, fullName?: string | null, deviceType?: string | null): Kind | null {
   const dt = (deviceType || "").toLowerCase();
   // 1) Hardware device types — explicit wins.
-  if (dt === "cisco_router") return { key: "cisco_router", label: "Router", bg: PRIMARY_BLUE };
-  if (dt === "cisco_switch") return { key: "cisco_switch", label: "Switch", bg: PRIMARY_BLUE };
-  if (dt === "cisco_firewall") return { key: "cisco_firewall", label: "Firewall", bg: PRIMARY_BLUE };
-  if (dt === "cisco_nxos") return { key: "cisco_switch", label: "Nexus", bg: PRIMARY_BLUE };
-  if (dt === "cisco_sdwan") return { key: "cisco_router", label: "SD-WAN", bg: PRIMARY_BLUE };
+  if (dt === "network_router") return { key: "network_router", label: "Router", bg: PRIMARY_BLUE };
+  if (dt === "network_switch") return { key: "network_switch", label: "Switch", bg: PRIMARY_BLUE };
+  if (dt === "network_firewall") return { key: "network_firewall", label: "Firewall", bg: PRIMARY_BLUE };
+  if (dt === "network_nxos") return { key: "network_switch", label: "Nexus", bg: PRIMARY_BLUE };
+  if (dt === "network_sdwan") return { key: "network_router", label: "SD-WAN", bg: PRIMARY_BLUE };
   if (/(^|[-_])cat[-_]?sdwan(?:[-_]|$)/.test(dt) || /(^|[-_])sd[-_]?wan(?:[-_]|$)/.test(dt)) {
-    return { key: "cisco_router", label: "SD-WAN", bg: PRIMARY_BLUE };
+    return { key: "network_router", label: "SD-WAN", bg: PRIMARY_BLUE };
   }
   if (/(^|[-_])teva(?:[-_]|$)/.test(dt)) return { key: "ubuntu", label: "Ubuntu", bg: "#e95420" };
   if (dt === "linux_ubuntu") return { key: "ubuntu", label: "Ubuntu", bg: "#e95420" };
@@ -87,7 +86,7 @@ function classify(family?: string | null, fullName?: string | null, deviceType?:
     || dt.startsWith("cat9")
     || dt.includes("switch")
   ) {
-    return { key: "cisco_switch", label: "Switch", bg: PRIMARY_BLUE };
+    return { key: "network_switch", label: "Switch", bg: PRIMARY_BLUE };
   }
   if (
     /(^|[-_])(asav|ftdv?|firepower)([-_]|$)/.test(dt)
@@ -95,7 +94,7 @@ function classify(family?: string | null, fullName?: string | null, deviceType?:
     || dt.startsWith("ftd")
     || dt.includes("firewall")
   ) {
-    return { key: "cisco_firewall", label: "Firewall", bg: PRIMARY_BLUE };
+    return { key: "network_firewall", label: "Firewall", bg: PRIMARY_BLUE };
   }
   if (
     /(^|[-_])(iosv|iosxe|iosxr|iosxrv|xrv|csr1000v|c8000v|cat8000v|iol|vios|router)([-_]|$)/.test(dt)
@@ -106,7 +105,7 @@ function classify(family?: string | null, fullName?: string | null, deviceType?:
     || dt.startsWith("c8")
     || dt.startsWith("cat8")
   ) {
-    return { key: "cisco_router", label: "Router", bg: PRIMARY_BLUE };
+    return { key: "network_router", label: "Router", bg: PRIMARY_BLUE };
   }
   if (dt.includes("ubuntu")) return { key: "ubuntu", label: "Ubuntu", bg: "#e95420" };
   if (dt.includes("alpine")) return { key: "alpine", label: "Alpine", bg: "#0d597f" };
@@ -120,7 +119,7 @@ function classify(family?: string | null, fullName?: string | null, deviceType?:
   const full = (fullName || "").toLowerCase();
   if (/(^|[-_/\s])teva(?:[-_/\s]|$)/.test(full)) return { key: "ubuntu", label: "Ubuntu", bg: "#e95420" };
   if (/(^|[-_/\s])(?:cat[-_]?sdwan|sd[-_]?wan)(?:[-_/\s]|$)/.test(full)) {
-    return { key: "cisco_router", label: "SD-WAN", bg: PRIMARY_BLUE };
+    return { key: "network_router", label: "SD-WAN", bg: PRIMARY_BLUE };
   }
   if (full.includes("ubuntu")) return { key: "ubuntu", label: "Ubuntu", bg: "#e95420" };
   if (full.includes("rocky")) return { key: "rocky", label: "Rocky", bg: "#10b981" };
@@ -143,7 +142,6 @@ function classify(family?: string | null, fullName?: string | null, deviceType?:
 }
 
 // ── Inline SVG glyphs (24×24 viewBox). Ported from the legacy
-// ce-lab-frontend DeviceIcon so HW and VM rows look identical.
 // Each glyph fills the tile and uses white strokes/fills against the
 // `bg` color set by `classify` above.
 
@@ -292,9 +290,9 @@ function Unknown({ s }: { s: number }) {
 }
 
 const GLYPHS: Record<string, (p: { s: number }) => JSX.Element> = {
-  cisco_router: Router,
-  cisco_switch: Switch,
-  cisco_firewall: Firewall,
+  network_router: Router,
+  network_switch: Switch,
+  network_firewall: Firewall,
   ubuntu: Ubuntu,
   rhel: Rhel,
   rocky: Rocky,

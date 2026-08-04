@@ -4,7 +4,7 @@ import type { ThemeSchemeOverride } from "../api/appearance";
 // configuration, with standalone-safe display names and only the themes that
 // ConnCat exposes.
 const PRODUCTION_OVERRIDES: Record<string, ThemeSchemeOverride> = {
-      "cisco": {
+      "ocean-blue": {
         "defaultScheme": "medium",
         "label": "Ocean Blue",
         "schemes": {
@@ -511,7 +511,7 @@ const PRODUCTION_OVERRIDES: Record<string, ThemeSchemeOverride> = {
           }
         }
       },
-      "thousandeyes-steel": {
+      "steel-horizon": {
         "defaultScheme": "medium",
         "label": "Steel Horizon",
         "schemes": {
@@ -552,10 +552,7 @@ const PRODUCTION_OVERRIDES: Record<string, ThemeSchemeOverride> = {
       }
 };
 
-// Preserve the IDs used by early standalone builds while resolving them to
-// the corresponding production palette. New selections use production IDs.
 export const PRODUCTION_THEME_SCHEME_OVERRIDES: Record<string, ThemeSchemeOverride> = {
   ...PRODUCTION_OVERRIDES,
-  connecat: PRODUCTION_OVERRIDES.cisco,
-  "steel-horizon": PRODUCTION_OVERRIDES["thousandeyes-steel"],
+  connecat: PRODUCTION_OVERRIDES["ocean-blue"],
 };

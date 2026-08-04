@@ -1098,10 +1098,10 @@ mod tests {
 
     #[test]
     fn redirect_rewrite_normalizes_default_ports() {
-        let upstream = reqwest::Url::parse("https://172.18.6.182/").unwrap();
+        let upstream = reqwest::Url::parse("https://192.0.2.55/").unwrap();
         assert_eq!(
             rewrite_location(
-                "https://172.18.6.182:443/login?next=%2F",
+                "https://192.0.2.55:443/login?next=%2F",
                 &upstream,
                 "http://127.0.0.1:55432"
             ),
@@ -1119,9 +1119,8 @@ mod tests {
 
     #[test]
     fn csrfguard_script_uses_loopback_browser_domain() {
-        let public_url =
-            reqwest::Url::parse("https://172.18.6.182/admin/JavaScriptServlet").unwrap();
-        let mut body = br#"/* OWASP CSRFGuard */ var domainOrigin = '172.18.6.182';"#.to_vec();
+        let public_url = reqwest::Url::parse("https://192.0.2.55/admin/JavaScriptServlet").unwrap();
+        let mut body = br#"/* OWASP CSRFGuard */ var domainOrigin = '192.0.2.55';"#.to_vec();
         assert!(rewrite_csrfguard_domain(
             &mut body,
             "text/javascript;charset=UTF-8",

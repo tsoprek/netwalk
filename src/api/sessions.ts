@@ -166,7 +166,7 @@ export interface SavedSession {
   transcriptDir?: string;
   /// Optional device-type / OS icon to display on the My Connections row
   /// and focus card. Values come from `DEVICE_TYPE_OPTIONS` in
-  /// `components/GuestOsIcon.tsx` (e.g. `cisco_router`, `linux_ubuntu`).
+  /// `components/GuestOsIcon.tsx` (e.g. `network_router`, `linux_ubuntu`).
   /// Empty/undefined = no icon shown.
   deviceTypeIcon?: string;
 }

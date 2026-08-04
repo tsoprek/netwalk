@@ -417,50 +417,9 @@ export const DEFAULTS: Required<{
 };
 
 const PREFS_KEY = "connecat.appearance.prefs";
-const REMOVED_BLACK_CAT_THEME_IDS = new Set(["cisco-black-cat", "cisco-black-cat-2"]);
-
-function migrateRemovedThemeBrand(brand: BrandConfig | undefined): BrandConfig | undefined {
-  if (!brand?.id || !REMOVED_BLACK_CAT_THEME_IDS.has(brand.id)) return brand;
-  return {
-    id: "cisco",
-    identity: "default",
-    name: "ConnCat",
-    logoUrl: "",
-    accent: "#049fd9",
-  };
-}
-
-function migrateRemovedThemeTarget(target: ScheduledThemeTarget): ScheduledThemeTarget {
-  const removedThemeValue = target.themeValue === "builtin:cisco-black-cat"
-    || target.themeValue === "builtin:cisco-black-cat-2";
-  const brand = migrateRemovedThemeBrand(target.brand);
-  if (!removedThemeValue && brand === target.brand) return target;
-  return {
-    ...target,
-    themeValue: removedThemeValue ? "builtin:cisco" : target.themeValue,
-    brand: brand ?? target.brand,
-  };
-}
-
-export function migrateRemovedThemePrefs(prefs: AppearanceConfig): AppearanceConfig {
-  const brand = migrateRemovedThemeBrand(prefs.brand);
-  const schedule = prefs.themeSchedule;
-  const day = schedule ? migrateRemovedThemeTarget(schedule.day) : undefined;
-  const night = schedule ? migrateRemovedThemeTarget(schedule.night) : undefined;
-  if (brand === prefs.brand && (!schedule || (day === schedule.day && night === schedule.night))) {
-    return prefs;
-  }
-  return {
-    ...prefs,
-    ...(brand ? { brand } : {}),
-    ...(schedule ? { themeSchedule: { ...schedule, day: day!, night: night! } } : {}),
-  };
-}
 
 const BUILT_IN_BRAND_IDS = new Set([
   "default",
-  "thousandeyes",
-  "thousandeyes-steel",
   "midnight-copper",
   "steel-horizon",
   "pride",
@@ -474,7 +433,7 @@ const BUILT_IN_BRAND_IDS = new Set([
   "got-martell",
   "got-arryn",
   "got-tully",
-  "cisco",
+  "ocean-blue",
   "connecat",
   "jedi",
   "sith",
@@ -527,7 +486,7 @@ export function loadUserPrefs(): AppearanceConfig {
     if (!raw) return {};
     const v = JSON.parse(raw);
     return v && typeof v === "object"
-      ? migrateRemovedThemePrefs(removeLegacyBackgroundImagePrefs(v as AppearanceConfig))
+      ? removeLegacyBackgroundImagePrefs(v as AppearanceConfig)
       : {};
   } catch {
     return {};
@@ -537,7 +496,7 @@ export function loadUserPrefs(): AppearanceConfig {
 export function saveUserPrefs(prefs: AppearanceConfig): void {
   localStorage.setItem(
     PREFS_KEY,
-    JSON.stringify(migrateRemovedThemePrefs(removeLegacyBackgroundImagePrefs(prefs))),
+    JSON.stringify(removeLegacyBackgroundImagePrefs(prefs)),
   );
 }
 
@@ -804,7 +763,7 @@ export function resolveAppearance(
   user: AppearanceConfig | undefined,
 ): ResolvedAppearance {
   const s = server ?? {};
-  const u = migrateRemovedThemePrefs(user ?? {});
+  const u = user ?? {};
   const d = DEFAULTS;
   const autoOpenSshOnDoubleClick = pick(
     u.autoOpenSshOnDoubleClick,

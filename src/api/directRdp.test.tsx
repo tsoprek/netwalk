@@ -206,7 +206,7 @@ describe("direct saved-connection RDP", () => {
   it("prefills the RDP username from the Connection's primary local identity", async () => {
     const identity = addIdentity({
       kind: "literal",
-      username: "tsoprek",
+      username: "testuser",
       source: "manual",
     });
     upsertAssignment({
@@ -221,7 +221,7 @@ describe("direct saved-connection RDP", () => {
     await act(async () => container?.querySelector("button")?.click());
 
     const inputs = [...container!.querySelectorAll("input")] as HTMLInputElement[];
-    expect(inputs[0].value).toBe("tsoprek");
+    expect(inputs[0].value).toBe("testuser");
   });
 
   it("prefills the RDP username from the inherited global local identity", async () => {

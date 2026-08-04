@@ -60,17 +60,17 @@
    blue-gray form surface. Light-mode variants inherit the light field
    surface instead of leaking a dark preset color into every input. */
 :root[data-brand="midnight-copper"][data-theme="dark"],
-:root[data-brand="thousandeyes"][data-theme="dark"] {
+:root[data-brand="midnight-copper"][data-theme="dark"] {
   --field-bg: #343b4a;
 }
 
 :root[data-brand="steel-horizon"][data-theme="dark"],
-:root[data-brand="thousandeyes-steel"][data-theme="dark"] {
+:root[data-brand="steel-horizon"][data-theme="dark"] {
   --field-bg: #3e4d6a;
 }
 
 :root[data-brand="connecat"][data-theme="dark"],
-:root[data-brand="cisco"][data-theme="dark"] {
+:root[data-brand="ocean-blue"][data-theme="dark"] {
   --field-bg: #253c4b;
 }
 
@@ -3733,12 +3733,12 @@ main:has(.terminals-shell) { padding: 0; overflow: hidden; }
 
 /* ---------- ConnCat brand: clean deep blue ---------- */
 :root[data-brand="connecat"] .brand,
-:root[data-brand="cisco"] .brand {
+:root[data-brand="ocean-blue"] .brand {
   border-bottom: 2px solid var(--accent);
   padding-bottom: 1px;
 }
 :root[data-brand="connecat"] .topbar,
-:root[data-brand="cisco"] .topbar {
+:root[data-brand="ocean-blue"] .topbar {
   box-shadow: 0 1px 0 var(--accent);
 }
 

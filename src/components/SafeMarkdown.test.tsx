@@ -5,10 +5,10 @@ import SafeMarkdown, { normalizeMarkdownLinks } from "./SafeMarkdown";
 describe("SafeMarkdown", () => {
   it("renders formatting, lists, line breaks, and safe links", () => {
     const html = renderToStaticMarkup(
-      <SafeMarkdown text={"**Login**\n*User: cisco*\n- one\n- two\n[HERO](https://example.com/path?a=1&b=2)"} />,
+      <SafeMarkdown text={"**Login**\n*User: operator*\n- one\n- two\n[HERO](https://example.com/path?a=1&b=2)"} />,
     );
     expect(html).toContain("<strong>Login</strong>");
-    expect(html).toContain("<em>User: cisco</em>");
+    expect(html).toContain("<em>User: operator</em>");
     expect(html).toContain("<ul>");
     expect(html).toContain("<br/>");
     expect(html).toContain('href="https://example.com/path?a=1&amp;b=2"');

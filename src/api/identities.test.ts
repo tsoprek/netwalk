@@ -39,8 +39,8 @@ beforeEach(() => {
 
 describe("default behavior (case 1: current user everywhere)", () => {
   it("returns current user as primary when nothing is configured", () => {
-    expect(getPrimaryUsername("dev-1", "fallback", { currentUser: "tsoprek" })).toBe(
-      "tsoprek",
+    expect(getPrimaryUsername("dev-1", "fallback", { currentUser: "testuser" })).toBe(
+      "testuser",
     );
   });
 
@@ -117,7 +117,7 @@ describe("device scope", () => {
       identities: [{ identityId: ident.id, priority: 0 }],
       source: "self",
     });
-    expect(getPrimaryUsername("dev-1", "admin", { currentUser: "tsoprek" })).toBe(
+    expect(getPrimaryUsername("dev-1", "admin", { currentUser: "testuser" })).toBe(
       "tealab",
     );
   });
@@ -129,8 +129,8 @@ describe("device scope", () => {
       identities: [{ identityId: ident.id, priority: 0 }],
       source: "self",
     });
-    expect(getPrimaryUsername("dev-2", "admin", { currentUser: "tsoprek" })).toBe(
-      "tsoprek",
+    expect(getPrimaryUsername("dev-2", "admin", { currentUser: "testuser" })).toBe(
+      "testuser",
     );
   });
 
@@ -439,15 +439,15 @@ describe("dedupe", () => {
   });
 
   it("dedupes current-user against a literal with the same username", () => {
-    const lit1 = lit("tsoprek");
+    const lit1 = lit("testuser");
     upsertAssignment({
       scope: { kind: "global" },
       identities: [{ identityId: lit1.id, priority: 0 }],
       source: "self",
     });
-    // current-user resolves to "tsoprek" too; should appear only once.
-    const list = effectiveUsernames("dev-1", "admin", { currentUser: "tsoprek" });
-    expect(list).toEqual(["tsoprek"]);
+    // current-user resolves to "testuser" too; should appear only once.
+    const list = effectiveUsernames("dev-1", "admin", { currentUser: "testuser" });
+    expect(list).toEqual(["testuser"]);
   });
 
   it("skips identities with empty username (e.g. current-user with no login)", () => {
@@ -480,10 +480,10 @@ describe("migration from legacy catwalk.deviceUser.* keys", () => {
     localStorage.setItem("catwalk.deviceUser.dev-1", "tealab");
     localStorage.setItem("catwalk.deviceUser.dev-2", "root");
     expect(migrateLegacyDeviceOverrides()).toBe(2);
-    expect(getPrimaryUsername("dev-1", "admin", { currentUser: "tsoprek" })).toBe(
+    expect(getPrimaryUsername("dev-1", "admin", { currentUser: "testuser" })).toBe(
       "tealab",
     );
-    expect(getPrimaryUsername("dev-2", "admin", { currentUser: "tsoprek" })).toBe(
+    expect(getPrimaryUsername("dev-2", "admin", { currentUser: "testuser" })).toBe(
       "root",
     );
   });
@@ -553,7 +553,7 @@ describe("fallback safety net", () => {
 
 describe("CRUD helpers (updateIdentity, countIdentityUsage)", () => {
   it("updateIdentity edits username in place; assignments still resolve", () => {
-    const ident = lit("tsoprek", "Personal");
+    const ident = lit("testuser", "Personal");
     upsertAssignment({
       scope: { kind: "device", deviceId: "dev-1" },
       identities: [{ identityId: ident.id, priority: 0 }],
