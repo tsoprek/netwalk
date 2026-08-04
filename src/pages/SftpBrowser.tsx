@@ -575,51 +575,34 @@ export default function SftpBrowser(props: SftpBrowserProps = {}) {
 
       {sessionId == null ? (
         props.embedded ? (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "rgba(6, 12, 20, 0.82)",
-              zIndex: 5,
-              color: "#e5eef7",
-            }}
-          >
+          <div className="sftp-login-backdrop">
             <form
+              className="card sftp-login-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="sftp-login-title"
               onSubmit={(e) => { e.preventDefault(); if (!busy) void connect(); }}
-              style={{
-                width: "min(360px, calc(100% - 32px))",
-                display: "grid",
-                gap: 10,
-                padding: 18,
-                border: "1px solid rgba(148, 163, 184, 0.35)",
-                borderRadius: 8,
-                background: "#0f172a",
-                boxShadow: "0 18px 60px rgba(0, 0, 0, 0.35)",
-              }}
             >
-              <div style={{ fontWeight: 700, fontSize: "1rem" }}>SFTP Login — {title}</div>
+              <h3 id="sftp-login-title">SFTP Login — {title}</h3>
               <input
                 autoFocus={!username.trim()}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username"
+                aria-label="SFTP username"
                 autoComplete="username"
-                style={{ padding: "9px 10px", borderRadius: 6, border: "1px solid rgba(148, 163, 184, 0.45)", background: "#020617", color: "#f8fafc" }}
               />
               <PasswordInput
                 autoFocus={Boolean(username.trim())}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password (blank = use private key)"
+                aria-label="SFTP password"
                 autoComplete="current-password"
-                style={{ padding: "9px 10px", borderRadius: 6, border: "1px solid rgba(148, 163, 184, 0.45)", background: "#020617", color: "#f8fafc" }}
               />
-              {status && <div style={{ color: "#94a3b8", fontSize: "0.85rem" }}>{status}</div>}
-              {err && <div style={{ color: "salmon", fontSize: "0.85rem" }}>{err}</div>}
-              <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+              {status && <div className="sftp-login-dialog__status">{status}</div>}
+              {err && <div className="sftp-login-dialog__error" role="alert">{err}</div>}
+              <div className="sftp-login-dialog__actions">
                 <button type="button" className="btn-secondary btn-small" onClick={() => props.onClose?.()}>Cancel</button>
                 <button type="submit" className="btn-primary btn-small" disabled={busy}>{busy ? "Connecting…" : "Connect"}</button>
               </div>

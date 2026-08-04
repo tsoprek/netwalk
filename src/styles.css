@@ -5883,6 +5883,79 @@ main:has(.templates-page) { padding: 0; overflow: hidden; }
   background: color-mix(in srgb, var(--danger, #ff8585) 12%, transparent);
 }
 
+.sftp-login-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  color: var(--fg);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(4px);
+}
+.sftp-login-dialog.card {
+  box-sizing: border-box;
+  width: min(360px, 100%);
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 18px;
+  color: var(--fg);
+  background: var(--surface-bg, var(--panel));
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 60px color-mix(in srgb, var(--bg) 62%, transparent);
+}
+.sftp-login-dialog h3 {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--fg);
+  font-size: 1rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sftp-login-dialog input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 9px 10px;
+  color: var(--fg);
+  background: var(--field-bg);
+  border-color: var(--input-border, var(--border));
+}
+.sftp-login-dialog__status,
+.sftp-login-dialog__error {
+  font-size: .85rem;
+}
+.sftp-login-dialog__status { color: var(--muted); }
+.sftp-login-dialog__error { color: var(--danger, #ff8585); }
+.sftp-login-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+:root[data-brand] .sftp-browser .sftp-login-dialog button.btn-primary {
+  color: var(--btn-fg);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+}
+:root[data-brand] .sftp-browser .sftp-login-dialog button.btn-secondary {
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+}
+:root[data-brand] .sftp-browser .sftp-login-dialog button.btn-primary:hover:not(:disabled) {
+  color: var(--btn-fg);
+  background: color-mix(in srgb, var(--accent) 88%, var(--fg));
+  border-color: var(--accent);
+}
+:root[data-brand] .sftp-browser .sftp-login-dialog button.btn-secondary:hover:not(:disabled) {
+  color: var(--fg);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-color: var(--accent);
+}
+
 /* Sessions uses compact operational controls throughout the tab strip,
    find bar, and split-pane menu. Branded generic button fills make those
    controls visually heavy and can hide their accent glyphs. */
