@@ -14,6 +14,7 @@ import {
   type SessionGroup,
 } from "../api/sessions";
 import { useSidebarLaunchers } from "./sidebarLaunchers";
+import { isSidebarGroupDragging } from "./sidebarGroupState";
 
 type Dock = "left" | "right" | "top" | "bottom";
 type GroupBucket = { key: string; label: string; group?: SessionGroup; items: SavedSession[] };
@@ -278,7 +279,8 @@ export default function TerminalsSidebar() {
       {buckets.map((bucket) => {
         const open = !collapsedGroups.has(bucket.key);
         const drop = bucket.group && groupDrag?.over === bucket.group.id && groupDrag.from !== bucket.group.id;
-        const className = `terminals-sidebar-group${open ? " open" : ""}${groupDrag?.from === bucket.group?.id ? " dragging" : ""}${drop ? ` drop-${groupDrag.before ? "before" : "after"}${vertical ? " drop-v" : " drop-h"}` : ""}`;
+        const dragging = isSidebarGroupDragging(bucket.group?.id, groupDrag?.from);
+        const className = `terminals-sidebar-group${open ? " open" : ""}${dragging ? " dragging" : ""}${drop ? ` drop-${groupDrag.before ? "before" : "after"}${vertical ? " drop-v" : " drop-h"}` : ""}`;
         return <section key={bucket.key} className={className} style={{ "--terminals-group-edge": groupColor(bucket) } as CSSProperties} {...groupDragProps(bucket)}>
           <button type="button" className="terminals-sidebar-group-header" onClick={() => toggleGroup(bucket.key)} onContextMenu={(event) => groupMenu(event, bucket)} title={bucket.group ? "Click to expand/collapse · drag to reorder" : "Click to expand/collapse"}>
             <span className="caret">{open ? "▾" : "▸"}</span><span className="label">{bucket.label}</span><span className="count">{bucket.items.length}</span>

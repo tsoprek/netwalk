@@ -32,6 +32,8 @@ import Settings from "./pages/Settings";
 import SftpBrowser from "./pages/SftpBrowser";
 import SessionWindow from "./pages/SessionWindow";
 import { installNativeAppMenu } from "./nativeAppMenu";
+import gotBrandLogo from "../src-tauri/icons/dragon.png";
+import gotWinterBrandLogo from "../src-tauri/icons/got-night-king-test.png";
 
 const NAVIGATION: Array<{ path: string; label: string; icon: StandaloneTopbarIconName }> = [
   { path: "/connections", label: "Connections", icon: "connections" },
@@ -94,6 +96,11 @@ function Shell() {
   const isTauriRuntime = "__TAURI_INTERNALS__" in window || "__TAURI__" in window;
   const showWindowControls = isWindows && isTauriRuntime;
   const [windowMaximized, setWindowMaximized] = useState(false);
+  const themeBrandLogo = appearance.brand.id === "got"
+    ? (appearance.colorScheme === "light" ? gotWinterBrandLogo : gotBrandLogo)
+    : appearance.brand.id.startsWith("got-") || appearance.brand.identity === "custom"
+      ? appearance.brand.logoUrl
+      : "";
 
   useEffect(() => {
     document.title = "ConnCat";
@@ -256,11 +263,18 @@ function Shell() {
     <div className="app">
       <header ref={topbarRef} className="topbar" data-tauri-drag-region onContextMenu={openTopbarMenu}>
         <div ref={brandRef} className="brand-wrap">
-          <span className="standalone-brand-mark" aria-hidden="true">
-            <StandaloneTopbarIcon name="brand" size={31} />
-          </span>
+          {themeBrandLogo ? (
+            <img
+              className={`brand-logo${appearance.brand.id === "pride" ? " brand-logo--rainbow" : ""}`}
+              src={themeBrandLogo}
+              alt=""
+            />
+          ) : (
+            <span className="standalone-brand-mark" aria-hidden="true">
+              <StandaloneTopbarIcon name="brand" size={31} />
+            </span>
+          )}
           <span className="brand">ConnCat</span>
-          <span className="standalone-badge">Standalone</span>
         </div>
         <nav ref={navLeftRef} className="nav-left">
           {NAVIGATION.map((item) => (
