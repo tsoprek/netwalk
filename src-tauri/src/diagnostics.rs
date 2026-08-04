@@ -51,11 +51,6 @@ pub const CHANNELS: &[(&str, &str, &str)] = &[
         "SFTP",
         "Session and transfer metadata; file contents are excluded.",
     ),
-    (
-        "vm_cml_console",
-        "VM and CML consoles",
-        "Console connection lifecycle; screen and input data are excluded.",
-    ),
 ];
 const MAX_LOG_BYTES: u64 = 5 * 1024 * 1024;
 const MAX_LOG_FILES: usize = 5;
@@ -71,7 +66,6 @@ fn channel_log_filename(channel: &str) -> &'static str {
         "browse_proxy" => "browser-proxy.jsonl",
         "rdp" => "rdp.jsonl",
         "sftp" => "sftp.jsonl",
-        "vm_cml_console" => "vm-cml-consoles.jsonl",
         _ => "core-ui.jsonl",
     }
 }
@@ -524,8 +518,6 @@ fn channel_for_target(target: &str) -> &'static str {
         "rdp"
     } else if target.contains("tunnel") || target.contains("pty") || target.contains("ssh") {
         "ssh_tunnel"
-    } else if target.contains("console") {
-        "vm_cml_console"
     } else if target.contains("update") || target.contains("identity") || target.contains("enroll")
     {
         "enrollment_updates"
@@ -678,6 +670,7 @@ mod tests {
 
     #[test]
     fn maps_native_targets_to_channels() {
+        assert!(!CHANNELS.iter().any(|channel| channel.0 == "vm_cml_console"));
         assert_eq!(channel_for_target("catwalk_client::sftp"), "sftp");
         assert_eq!(channel_for_target("catwalk_client::tunnel"), "ssh_tunnel");
         assert_eq!(
@@ -688,6 +681,7 @@ mod tests {
             channel_for_target("catwalk_client::updates"),
             "enrollment_updates"
         );
+        assert_eq!(channel_for_target("catwalk_client::console"), "core_ui");
     }
 
     #[test]
@@ -772,6 +766,7 @@ mod tests {
         let mut archive = zip::ZipArchive::new(file).unwrap();
         assert!(archive.by_name("manifest.json").is_ok());
         assert!(archive.by_name("logs/README.txt").is_ok());
+        assert!(archive.by_name("logs/vm-cml-consoles.jsonl").is_err());
         let mut api_log = String::new();
         archive
             .by_name("logs/local-service-api.jsonl")

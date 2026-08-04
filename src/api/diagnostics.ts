@@ -2,7 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 
 export type DiagnosticChannelKey =
   | "core_ui" | "api" | "enrollment_updates" | "ssh_tunnel"
-  | "browse_proxy" | "rdp" | "sftp" | "vm_cml_console";
+  | "browse_proxy" | "rdp" | "sftp";
 
 export interface DiagnosticChannel {
   key: DiagnosticChannelKey;
