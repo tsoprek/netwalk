@@ -6,3 +6,4 @@ src-tauri/target/
 .connecat-build/
 *.log
 .DS_Store
+*.swp
