@@ -14,7 +14,7 @@ import StandaloneTopbarIcon, {
 import WindowControlIcon from "./components/WindowControlIcon";
 import { reloadAppWindow, useNavMenuItems } from "./components/navMenu";
 import { AppearanceProvider, useAppearance } from "./appearance/AppearanceContext";
-import { ViewModeProvider, useViewMode } from "./appearance/ViewModeContext";
+import { ViewModeProvider, useViewMode, type ViewMode } from "./appearance/ViewModeContext";
 import { TerminalsProvider, useTerminals } from "./terminals/TerminalsContext";
 import { ConsolesProvider } from "./consoles/ConsolesContext";
 import { useConsoles } from "./consoles/useConsoles";
@@ -72,6 +72,43 @@ function NavigationLink({
       {!iconsOnly && <span>{accessibleLabel}</span>}
       {iconsOnly && count && <span className="topbar-nav-count">{count}</span>}
     </Link>
+  );
+}
+
+// Production's list, compact-list, and focus-card switcher. The standalone
+// client has one shared data workspace, so it is shown on Connections only.
+function ViewModeToggle() {
+  const location = useLocation();
+  const { viewMode, setViewMode } = useViewMode();
+  if (!location.pathname.startsWith("/connections")) return null;
+
+  const button = (mode: ViewMode, label: string, icon: string) => (
+    <button
+      type="button"
+      onClick={() => setViewMode(mode)}
+      title={`${label} view`}
+      aria-label={`${label} view`}
+      aria-pressed={viewMode === mode}
+      style={{
+        background: "transparent",
+        color: viewMode === mode ? "var(--accent)" : "var(--muted)",
+        border: `1px solid ${viewMode === mode ? "var(--accent)" : "var(--border)"}`,
+        padding: "2px 8px",
+        fontSize: 14,
+        lineHeight: 1,
+        cursor: "pointer",
+      }}
+    >
+      {icon}
+    </button>
+  );
+
+  return (
+    <div role="group" aria-label="View mode" style={{ display: "inline-flex", gap: 0 }}>
+      {button("list", "List", "≣")}
+      {button("compact", "Compact list", "☰")}
+      {button("focus", "Focus", "▦")}
+    </div>
   );
 }
 
@@ -291,6 +328,7 @@ function Shell() {
           ))}
         </nav>
         <nav ref={navRightRef} className="nav-right">
+          <ViewModeToggle />
           <NavigationLink path="/settings" label="Settings" icon="settings" iconsOnly={iconsOnly} />
         </nav>
         {showWindowControls && (
